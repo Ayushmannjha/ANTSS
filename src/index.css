@@ -1,0 +1,3 @@
+/* Main entry point - imports are in App.css */
+/* This file can remain minimal as Tailwind is imported in App.css */
+@import "tailwindcss";

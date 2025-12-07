@@ -1,0 +1,13 @@
+export { Header } from './Header';
+export { Hero } from './Hero';
+export { Services } from './Services';
+export { Industries } from './Industries';
+export { WhyChooseUs } from './WhyChooseUs';
+export { CaseStudies } from './CaseStudies';
+export { Teams } from './Teams';
+export { TechStack } from './TechStack';
+export { Approach } from './Approach';
+export { ServiceDetails } from './ServiceDetails';
+export { Testimonials } from './Testimonials';
+export { Contact } from './Contact';
+export { Footer } from './Footer';
