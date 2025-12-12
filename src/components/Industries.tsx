@@ -1,181 +1,268 @@
-import { motion } from 'framer-motion';
 import { useRef } from 'react';
-import { useInView } from 'framer-motion';
-import { Building2, Truck, ShoppingCart, Landmark, HeartPulse, Droplet, ArrowRight } from 'lucide-react';
-import { fadeInLeft, fadeInRight, fadeInDown, zoomIn, withDelay, withSlowDelay } from '@/lib/animations';
+import { motion, useReducedMotion } from 'framer-motion';
+import { Building2, Truck, ShoppingCart, Landmark, HeartPulse, Droplet } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 
-const industries = [
+// ============================================
+// TYPES & INTERFACES
+// ============================================
+interface IndustryCardData {
+  title: string;
+  description: string;
+  meta?: string;
+  icon: LucideIcon;
+  image: string;
+  cta?: {
+    label: string;
+    href: string;
+  };
+}
+
+interface AnimatedCardListProps {
+  items: IndustryCardData[];
+}
+
+// ============================================
+// ANIMATION VARIANTS
+// ============================================
+
+// Container variant for staggered children
+const containerVariants = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.12,
+      delayChildren: 0.1,
+    },
+  },
+};
+
+// Card variant: right-to-left slide-in
+const cardVariants = {
+  hidden: {
+    x: 80,
+    opacity: 0,
+    scale: 0.98
+  },
+  visible: {
+    x: 0,
+    opacity: 1,
+    scale: 1,
+    transition: {
+      duration: 0.7,
+      ease: [0.22, 1, 0.36, 1], // cubic-bezier(.22,1,.36,1)
+    },
+  },
+};
+
+// Header variants: left-to-right slide-in
+const headerVariants = {
+  hidden: {
+    x: -60,
+    opacity: 0
+  },
+  visible: {
+    x: 0,
+    opacity: 1,
+    transition: {
+      duration: 0.8,
+      ease: [0.22, 1, 0.36, 1],
+    },
+  },
+};
+
+// Reduced motion variants (no transform, just fade)
+const reducedMotionCardVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { duration: 0.3 },
+  },
+};
+
+// ============================================
+// SAMPLE DATA
+// ============================================
+const industries: IndustryCardData[] = [
   {
     title: 'Real Estate',
+    meta: 'Property Tech',
     description: 'Property management systems, virtual tours, and listing platforms',
     icon: Building2,
     image: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=400&auto=format&fit=crop&q=60',
-    delay: 0,
-    slow: false,
   },
   {
     title: 'Logistic',
+    meta: 'Supply Chain',
     description: 'Supply chain management, fleet tracking, and delivery solutions',
     icon: Truck,
     image: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=400&auto=format&fit=crop&q=60',
-    delay: 300,
-    slow: false,
   },
   {
     title: 'ECommerce',
+    meta: 'Digital Commerce',
     description: 'Online stores, payment gateways, and inventory management',
     icon: ShoppingCart,
     image: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=400&auto=format&fit=crop&q=60',
-    delay: 400,
-    slow: true,
   },
   {
     title: 'Government',
+    meta: 'Public Sector',
     description: 'Citizen portals, document management, and public services',
     icon: Landmark,
     image: 'https://images.unsplash.com/photo-1555848962-6e79363ec58f?w=400&auto=format&fit=crop&q=60',
-    delay: 500,
-    slow: true,
   },
   {
     title: 'Healthcare',
+    meta: 'Health Tech',
     description: 'Patient management, telemedicine, and medical records',
     icon: HeartPulse,
     image: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=400&auto=format&fit=crop&q=60',
-    delay: 600,
-    slow: true,
   },
   {
     title: 'Oil & Gas',
+    meta: 'Energy Sector',
     description: 'Asset tracking, safety compliance, and production monitoring',
     icon: Droplet,
     image: 'https://images.unsplash.com/photo-1518709766631-a6a7f45921c3?w=400&auto=format&fit=crop&q=60',
-    delay: 700,
-    slow: true,
   },
 ];
 
-function IndustryCard({ industry, index }: { industry: typeof industries[0]; index: number }) {
-  const Icon = industry.icon;
-  
+// ============================================
+// ANIMATED CARD COMPONENT
+// ============================================
+function AnimatedCard({ item, shouldReduceMotion }: { item: IndustryCardData; shouldReduceMotion: boolean }) {
+  const Icon = item.icon;
+  const variants = shouldReduceMotion ? reducedMotionCardVariants : cardVariants;
+
   return (
     <motion.div
-      variants={fadeInRight}
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, margin: "-50px" }}
-      transition={industry.slow ? withSlowDelay(industry.delay) : withDelay(industry.delay)}
-      whileHover={{ y: -5 }}
-      className="group relative overflow-hidden rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 hover:border-purple-500/50 transition-all duration-300"
+      variants={variants}
+      className="group relative overflow-hidden rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 hover:border-orange-500/50 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-orange-500/10"
     >
-      {/* Image */}
-      <motion.div
-        variants={zoomIn}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true }}
-        transition={withSlowDelay(900)}
-        className="relative h-48 overflow-hidden"
-      >
+      {/* Image Section */}
+      <div className="relative h-48 overflow-hidden">
         <img
-          src={industry.image}
-          alt={industry.title}
+          src={item.image}
+          alt={item.title}
+          loading="lazy"
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-900 to-transparent" />
-        
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/20 to-transparent" />
+
         {/* Icon badge */}
-        <div className="absolute bottom-4 left-4 w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500/80 to-blue-500/80 backdrop-blur-sm flex items-center justify-center">
+        <div className="absolute bottom-4 left-4 w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500/90 to-red-500/90 backdrop-blur-sm flex items-center justify-center shadow-lg">
           <Icon className="w-6 h-6 text-white" />
         </div>
-      </motion.div>
+      </div>
 
-      {/* Content */}
-      <div className="p-6">
-        <motion.h3
-          variants={fadeInRight}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          transition={withDelay(1400)}
-          className="text-xl font-bold text-white mb-2 group-hover:text-purple-400 transition-colors"
-        >
-          {industry.title}
-        </motion.h3>
-        
-        <motion.p
-          variants={fadeInDown}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          transition={withDelay(1800)}
-          className="text-gray-400 text-sm"
-        >
-          {industry.description}
-        </motion.p>
+      {/* Content Section */}
+      <div className="p-6 space-y-3">
+        {/* Meta text */}
+        {item.meta && (
+          <span className="text-xs font-semibold uppercase tracking-wider text-orange-400">
+            {item.meta}
+          </span>
+        )}
+
+        {/* Title */}
+        <h3 className="text-xl font-bold text-white group-hover:text-orange-400 transition-colors duration-300">
+          {item.title}
+        </h3>
+
+        {/* Description */}
+        <p className="text-slate-400 text-sm leading-relaxed">
+          {item.description}
+        </p>
+
+        {/* Optional CTA */}
+        {item.cta && (
+          <a
+            href={item.cta.href}
+            className="inline-flex items-center gap-2 text-sm font-medium text-orange-400 hover:text-orange-300 transition-colors mt-2"
+          >
+            {item.cta.label}
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+            </svg>
+          </a>
+        )}
       </div>
     </motion.div>
   );
 }
 
-export function Industries() {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
+// ============================================
+// ANIMATED CARD LIST (REUSABLE)
+// ============================================
+export function AnimatedCardList({ items }: AnimatedCardListProps) {
+  const shouldReduceMotion = useReducedMotion();
 
   return (
-    <section id="industries" className="py-20 relative overflow-hidden" ref={ref}>
-      {/* Background */}
-      <div className="absolute inset-0 bg-gradient-to-b from-slate-900/95 to-slate-900" />
-      <div className="absolute top-1/2 right-0 w-96 h-96 bg-blue-500/20 rounded-full filter blur-[128px]" />
+    <motion.div
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, amount: 0.2 }}
+      variants={containerVariants}
+      className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"
+    >
+      {items.map((item) => (
+        <AnimatedCard
+          key={item.title}
+          item={item}
+          shouldReduceMotion={shouldReduceMotion ?? false}
+        />
+      ))}
+    </motion.div>
+  );
+}
+
+// ============================================
+// MAIN INDUSTRIES COMPONENT
+// ============================================
+export function Industries() {
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const shouldReduceMotion = useReducedMotion();
+
+  return (
+    <section id="industries" className="py-24 relative overflow-hidden bg-slate-950" ref={sectionRef}>
+      {/* Background Effects */}
+      <div className="absolute inset-0 bg-slate-950" />
+      <div className="absolute top-1/2 right-0 w-96 h-96 bg-blue-500/10 rounded-full blur-[128px] pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-64 h-64 bg-purple-500/10 rounded-full blur-[100px] pointer-events-none" />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="grid lg:grid-cols-2 gap-12 mb-16">
-          <div>
+
+        {/* Header Section */}
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.3 }}
+          variants={containerVariants}
+          className="grid lg:grid-cols-2 gap-12 mb-16"
+        >
+          <div className="space-y-6">
             <motion.h2
-              variants={fadeInLeft}
-              initial="hidden"
-              animate={isInView ? "visible" : "hidden"}
-              transition={withDelay(0)}
-              className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4"
+              variants={shouldReduceMotion ? reducedMotionCardVariants : headerVariants}
+              className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white tracking-tight"
             >
-              Industries{' '}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-400">
-                We Serve
+              Solutions for{' '}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-red-500">
+                Every Industry
               </span>
             </motion.h2>
-            
+
             <motion.p
-              variants={fadeInDown}
-              initial="hidden"
-              animate={isInView ? "visible" : "hidden"}
-              transition={withDelay(500)}
-              className="text-gray-400 max-w-xl"
+              variants={shouldReduceMotion ? reducedMotionCardVariants : headerVariants}
+              className="text-lg text-slate-400 max-w-xl leading-relaxed"
             >
               We have extensive experience working with clients across various sectors, delivering tailored solutions that address industry-specific challenges.
             </motion.p>
-            
-            <motion.button
-              variants={fadeInDown}
-              initial="hidden"
-              animate={isInView ? "visible" : "hidden"}
-              transition={withDelay(800)}
-              whileHover={{ scale: 0.95 }}
-              whileTap={{ scale: 0.9 }}
-              className="mt-8 px-8 py-4 bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded-full font-medium flex items-center gap-2 hover:shadow-lg hover:shadow-purple-500/25 transition-shadow"
-            >
-              Discover Now
-              <ArrowRight className="w-5 h-5" />
-            </motion.button>
           </div>
-        </div>
+        </motion.div>
 
-        {/* Industry Cards Grid */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {industries.map((industry, index) => (
-            <IndustryCard key={industry.title} industry={industry} index={index} />
-          ))}
-        </div>
+        {/* Animated Card Grid */}
+        <AnimatedCardList items={industries} />
       </div>
     </section>
   );

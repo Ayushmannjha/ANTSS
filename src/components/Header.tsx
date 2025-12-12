@@ -40,11 +40,10 @@ export function Header() {
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.6, ease: [0.25, 0.1, 0.25, 1] }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled
-          ? 'bg-slate-900/80 backdrop-blur-lg border-b border-white/10'
-          : 'bg-transparent'
-      }`}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled
+        ? 'bg-slate-900/80 backdrop-blur-lg border-b border-white/10'
+        : 'bg-transparent'
+        }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
@@ -55,7 +54,7 @@ export function Header() {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
-            <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-blue-500 rounded-lg flex items-center justify-center">
+            <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-red-500 rounded-lg flex items-center justify-center">
               <span className="text-white font-bold text-xl">P</span>
             </div>
             <span className="text-white font-bold text-xl hidden sm:block">Pemogan</span>
@@ -72,7 +71,7 @@ export function Header() {
                 whileTap={{ scale: 0.95 }}
               >
                 {item.name}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-purple-500 to-blue-500 transition-all duration-300 group-hover:w-full" />
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-orange-500 to-red-500 transition-all duration-300 group-hover:w-full" />
               </motion.button>
             ))}
           </nav>
@@ -81,7 +80,7 @@ export function Header() {
           <motion.button
             whileHover={{ scale: 0.95 }}
             whileTap={{ scale: 0.9 }}
-            className="hidden lg:block px-6 py-2.5 bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded-full font-medium hover:shadow-lg hover:shadow-purple-500/25 transition-shadow"
+            className="hidden lg:block px-6 py-2.5 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-full font-medium hover:shadow-lg hover:shadow-orange-500/25 transition-shadow"
           >
             Get Started
           </motion.button>
@@ -130,7 +129,7 @@ export function Header() {
               opacity: mobileMenuOpen ? 1 : 0,
             }}
             transition={{ delay: navItems.length * 0.1 }}
-            className="w-full px-6 py-2.5 bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded-full font-medium mt-4"
+            className="w-full px-6 py-2.5 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-full font-medium mt-4"
           >
             Get Started
           </motion.button>

@@ -90,7 +90,7 @@ export function TechStack() {
   const [activeTab, setActiveTab] = useState('web');
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
-  
+
   const activeTech = tabs.find(t => t.id === activeTab)!;
 
   return (
@@ -122,11 +122,10 @@ export function TechStack() {
               onClick={() => setActiveTab(tab.id)}
               whileHover={{ scale: 0.95 }}
               whileTap={{ scale: 0.9 }}
-              className={`px-6 py-3 rounded-xl font-medium transition-all duration-300 ${
-                activeTab === tab.id
+              className={`px-6 py-3 rounded-xl font-medium transition-all duration-300 ${activeTab === tab.id
                   ? 'bg-gradient-to-r from-purple-500 to-blue-500 text-white'
                   : 'bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white'
-              }`}
+                }`}
             >
               {tab.title}
             </motion.button>
@@ -182,7 +181,7 @@ export function TechStack() {
                 {activeTab === 'web' ? 'Backend' : activeTab === 'cloud' ? 'CI/CD & Tools' : activeTab === 'database' ? 'Specialized DBs' : 'Backend Services'}
               </h3>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                {activeTech.backend.map((tech, index) => (
+                {activeTech.backend.map((tech, _index) => (
                   <motion.div
                     key={tech.name}
                     variants={fadeInRight}

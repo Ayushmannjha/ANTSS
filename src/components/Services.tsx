@@ -1,15 +1,13 @@
-import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useRef } from 'react';
-import { useInView } from 'framer-motion';
-import { Palette, Code, Globe, Smartphone, Settings, ArrowRight, Check } from 'lucide-react';
-import { fadeInLeft, fadeInDown, zoomIn, withDelay, withSlowDelay } from '@/lib/animations';
+import { motion, AnimatePresence, useInView } from 'framer-motion';
+import { Palette, Code, Globe, Smartphone, Settings, Check } from 'lucide-react';
 
 const services = [
   {
     id: 'design',
     title: 'Evaluation & Design',
     icon: Palette,
-    image: 'https://images.unsplash.com/photo-1561070791-2526d30994b5?w=600&auto=format&fit=crop&q=60',
+    image: '/design.png',
     description: 'We analyze your requirements and create stunning designs that align with your brand identity and user expectations.',
     features: [
       'UI/UX Research & Analysis',
@@ -23,7 +21,7 @@ const services = [
     id: 'software',
     title: 'Custom Software',
     icon: Code,
-    image: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=600&auto=format&fit=crop&q=60',
+    image: '/software.png',
     description: 'Tailored software solutions built from scratch to address your unique business challenges and requirements.',
     features: [
       'Enterprise Applications',
@@ -37,7 +35,7 @@ const services = [
     id: 'web',
     title: 'Web Development',
     icon: Globe,
-    image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&auto=format&fit=crop&q=60',
+    image: '/services-abstract.png',
     description: 'Modern, responsive web applications built with cutting-edge technologies for optimal performance.',
     features: [
       'Progressive Web Apps',
@@ -51,7 +49,7 @@ const services = [
     id: 'mobile',
     title: 'Mobile Development',
     icon: Smartphone,
-    image: 'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=600&auto=format&fit=crop&q=60',
+    image: '/mobile.png',
     description: 'Native and cross-platform mobile applications that deliver exceptional user experiences.',
     features: [
       'iOS & Android Apps',
@@ -65,7 +63,7 @@ const services = [
     id: 'maintenance',
     title: 'Maintenance & Support',
     icon: Settings,
-    image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&auto=format&fit=crop&q=60',
+    image: '/maintenance.png',
     description: 'Ongoing support and maintenance to ensure your applications run smoothly and stay up-to-date.',
     features: [
       '24/7 Technical Support',
@@ -77,167 +75,243 @@ const services = [
   },
 ];
 
+// Animation variants for left-to-right slide-in
+const containerVariants = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.15,
+    },
+  },
+};
+
+const slideInVariants = {
+  hidden: {
+    x: -80,
+    opacity: 0,
+    scale: 0.95
+  },
+  visible: {
+    x: 0,
+    opacity: 1,
+    scale: 1,
+    transition: {
+      duration: 0.8,
+      ease: "easeOut" as const,
+    },
+  },
+};
+
+const tabVariants = {
+  hidden: {
+    x: -50,
+    opacity: 0,
+    scale: 0.95
+  },
+  visible: {
+    x: 0,
+    opacity: 1,
+    scale: 1,
+    transition: {
+      duration: 0.6,
+      ease: "easeOut" as const,
+    },
+  },
+};
+
+const contentVariants = {
+  hidden: {
+    x: -80,
+    opacity: 0,
+    scale: 0.95
+  },
+  visible: {
+    x: 0,
+    opacity: 1,
+    scale: 1,
+    transition: {
+      duration: 0.8,
+      ease: "easeOut" as const,
+    },
+  },
+  exit: {
+    x: 80,
+    opacity: 0,
+    scale: 0.95,
+    transition: {
+      duration: 0.3,
+      ease: "easeIn" as const,
+    },
+  },
+};
+
+const imageVariants = {
+  hidden: {
+    x: -120,
+    opacity: 0,
+    scale: 0.9
+  },
+  visible: {
+    x: 0,
+    opacity: 1,
+    scale: 1,
+    transition: {
+      duration: 1,
+      ease: "easeOut" as const,
+    },
+  },
+};
+
+const floatAnimation = {
+  y: [0, 15, 0],
+  rotate: [0, 2, 0],
+  transition: {
+    duration: 6,
+    ease: "easeInOut" as const,
+    repeat: Infinity,
+  },
+};
+
 export function Services() {
   const [activeTab, setActiveTab] = useState('design');
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
-  
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const isInView = useInView(sectionRef, { once: true, margin: "-100px" });
+
   const activeService = services.find(s => s.id === activeTab)!;
 
+  const handleTabChange = (id: string) => {
+    if (id === activeTab) return;
+    setActiveTab(id);
+  };
+
   return (
-    <section id="services" className="py-20 relative overflow-hidden" ref={ref}>
-      {/* Background */}
-      <div className="absolute inset-0 bg-gradient-to-b from-slate-900 to-slate-900/95" />
-      <div className="absolute top-1/2 left-0 w-72 h-72 bg-purple-500/20 rounded-full filter blur-[100px]" />
+    <section id="services" className="py-24 relative overflow-hidden bg-slate-950" ref={sectionRef}>
+      {/* Background Elements */}
+      <div className="absolute inset-0 bg-slate-950" />
+      <div className="absolute top-0 left-0 w-full h-[500px] bg-gradient-to-b from-purple-900/10 to-transparent pointer-events-none" />
+      <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-blue-500/5 rounded-full blur-[100px] pointer-events-none" />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Section Header */}
-        <div className="text-center mb-16">
-          <motion.h2
-            variants={fadeInLeft}
-            initial="hidden"
-            animate={isInView ? "visible" : "hidden"}
-            transition={withDelay(0)}
-            className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4"
-          >
-            Our{' '}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-400">
-              Services
-            </span>
-          </motion.h2>
-          <motion.p
-            variants={fadeInDown}
-            initial="hidden"
-            animate={isInView ? "visible" : "hidden"}
-            transition={withDelay(500)}
-            className="text-gray-400 max-w-2xl mx-auto"
-          >
-            We offer comprehensive software development services tailored to your needs
-          </motion.p>
-        </div>
 
-        {/* Tabs */}
+        {/* Header - Slide in from left */}
         <motion.div
-          variants={fadeInDown}
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
-          transition={withDelay(800)}
-          className="flex flex-wrap justify-center gap-2 mb-12"
+          variants={containerVariants}
+          className="text-center mb-16 space-y-4"
         >
-          {services.map((service) => {
-            const Icon = service.icon;
-            return (
-              <motion.button
-                key={service.id}
-                onClick={() => setActiveTab(service.id)}
-                whileHover={{ scale: 0.95 }}
-                whileTap={{ scale: 0.9 }}
-                className={`px-4 py-3 rounded-xl flex items-center gap-2 transition-all duration-300 ${
-                  activeTab === service.id
-                    ? 'bg-gradient-to-r from-purple-500 to-blue-500 text-white'
-                    : 'bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white'
-                }`}
-              >
-                <Icon className="w-5 h-5" />
-                <span className="hidden sm:inline">{service.title}</span>
-              </motion.button>
-            );
-          })}
+          <motion.h2
+            variants={slideInVariants}
+            className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white tracking-tight"
+          >
+            Our <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-red-500">Expertise</span>
+          </motion.h2>
+          <motion.p
+            variants={slideInVariants}
+            className="text-lg text-slate-400 max-w-2xl mx-auto leading-relaxed"
+          >
+            Comprehensive solutions engineered for scale, performance, and impact.
+          </motion.p>
         </motion.div>
 
-        {/* Tab Content */}
+        {/* Tabs - Staggered slide in from left */}
+        <motion.div
+          initial="hidden"
+          animate={isInView ? "visible" : "hidden"}
+          variants={containerVariants}
+          className="flex flex-wrap justify-center gap-3 mb-16"
+        >
+          {services.map((service) => (
+            <motion.button
+              key={service.id}
+              variants={tabVariants}
+              onClick={() => handleTabChange(service.id)}
+              whileHover={{ scale: 1.05, y: -2 }}
+              whileTap={{ scale: 0.98 }}
+              className={`px-6 py-3 rounded-full text-sm font-medium transition-all duration-300 border border-transparent
+                ${activeTab === service.id
+                  ? 'bg-[#ff5a2a] text-white shadow-[0_6px_20px_rgba(255,90,42,0.25)]'
+                  : 'bg-white/5 text-slate-400 hover:bg-white/10 hover:text-white'}`}
+            >
+              {service.title}
+            </motion.button>
+          ))}
+        </motion.div>
+
+        {/* Main Content Card - Animated on tab change */}
         <AnimatePresence mode="wait">
           <motion.div
             key={activeTab}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.3 }}
-            className="grid lg:grid-cols-2 gap-12 items-center"
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+            variants={contentVariants}
+            className="relative rounded-3xl overflow-hidden border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl"
           >
-            {/* Image */}
-            <motion.div
-              variants={zoomIn}
-              initial="hidden"
-              animate="visible"
-              transition={withSlowDelay(900)}
-              className="relative"
-            >
-              <div className="relative rounded-2xl overflow-hidden">
-                <img
-                  src={activeService.image}
-                  alt={activeService.title}
-                  className="w-full h-[400px] object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent" />
-              </div>
-              
-              {/* Floating badge */}
-              <div className="absolute -bottom-6 -right-6 glass-card p-4">
-                <activeService.icon className="w-8 h-8 text-purple-400" />
-              </div>
-            </motion.div>
+            <div className="grid lg:grid-cols-2 gap-0 lg:gap-12 items-center p-8 lg:p-12">
 
-            {/* Content */}
-            <div className="space-y-6">
-              <motion.h3
-                variants={fadeInLeft}
+              {/* Visual Side - Image slides in from left */}
+              <motion.div
+                className="relative h-[300px] lg:h-[400px] flex items-center justify-center order-2 lg:order-1"
+                variants={imageVariants}
+              >
+                {/* 3D Asset with float animation */}
+                <motion.div
+                  className="relative z-10 w-full h-full flex items-center justify-center"
+                  animate={floatAnimation}
+                >
+                  <img
+                    src={activeService.image}
+                    alt={activeService.title}
+                    className="w-auto h-full max-h-[350px] object-contain drop-shadow-2xl [mix-blend-mode:screen]"
+                  />
+                </motion.div>
+                {/* Glow behind */}
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-orange-500/20 rounded-full blur-[80px]" />
+              </motion.div>
+
+              {/* Text Side - Staggered slide in */}
+              <motion.div
+                className="space-y-8 order-1 lg:order-2"
+                variants={containerVariants}
                 initial="hidden"
                 animate="visible"
-                transition={withDelay(0)}
-                className="text-3xl font-bold text-white"
               >
-                {activeService.title}
-              </motion.h3>
+                <motion.div variants={slideInVariants} className="space-y-4">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-500/10 text-orange-400 text-xs font-semibold tracking-wider uppercase">
+                    <activeService.icon className="w-3 h-3" />
+                    {activeService.title}
+                  </div>
+                  <h3 className="text-3xl lg:text-4xl font-bold text-white">
+                    {activeService.title}
+                  </h3>
+                  <p className="text-slate-400 text-lg leading-relaxed">
+                    {activeService.description}
+                  </p>
+                </motion.div>
 
-              <motion.p
-                variants={fadeInDown}
-                initial="hidden"
-                animate="visible"
-                transition={withDelay(500)}
-                className="text-gray-400"
-              >
-                {activeService.description}
-              </motion.p>
-
-              <motion.ul
-                variants={fadeInDown}
-                initial="hidden"
-                animate="visible"
-                transition={withDelay(800)}
-                className="space-y-3"
-              >
-                {activeService.features.map((feature, index) => (
-                  <motion.li
-                    key={feature}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.8 + index * 0.1 }}
-                    className="flex items-center gap-3"
-                  >
-                    <div className="w-5 h-5 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 flex items-center justify-center flex-shrink-0">
-                      <Check className="w-3 h-3 text-white" />
-                    </div>
-                    <span className="text-gray-300">{feature}</span>
-                  </motion.li>
-                ))}
-              </motion.ul>
-
-              <motion.button
-                variants={fadeInDown}
-                initial="hidden"
-                animate="visible"
-                transition={withDelay(1000)}
-                whileHover={{ scale: 0.95 }}
-                whileTap={{ scale: 0.9 }}
-                className="px-8 py-4 bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded-full font-medium flex items-center gap-2 hover:shadow-lg hover:shadow-purple-500/25 transition-shadow"
-              >
-                Learn More
-                <ArrowRight className="w-5 h-5" />
-              </motion.button>
+                <motion.div
+                  className="grid sm:grid-cols-2 gap-4"
+                  variants={containerVariants}
+                >
+                  {activeService.features.map((feature, i) => (
+                    <motion.div
+                      key={i}
+                      variants={slideInVariants}
+                      className="flex items-start gap-3 group"
+                    >
+                      <div className="mt-1 w-5 h-5 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0 group-hover:bg-[#ff5a2a] transition-colors duration-300">
+                        <Check className="w-3 h-3 text-white" />
+                      </div>
+                      <span className="text-slate-300 text-sm">{feature}</span>
+                    </motion.div>
+                  ))}
+                </motion.div>
+              </motion.div>
             </div>
           </motion.div>
         </AnimatePresence>
+
       </div>
     </section>
   );
