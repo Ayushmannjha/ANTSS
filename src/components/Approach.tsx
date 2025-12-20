@@ -14,7 +14,7 @@ export function Approach() {
     <section className="py-20 relative overflow-hidden" ref={ref}>
       {/* Background */}
       <div className="absolute inset-0 bg-gradient-to-b from-slate-900 to-slate-900/95" />
-      <div className="absolute bottom-0 left-0 w-96 h-96 bg-purple-500/20 rounded-full filter blur-[128px]" />
+      <div className="absolute bottom-0 left-0 w-96 h-96 bg-orange-500/20 rounded-full filter blur-[128px]" />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
@@ -28,7 +28,7 @@ export function Approach() {
               className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white"
             >
               Our{' '}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-400">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-red-400">
                 Approach
               </span>
             </motion.h2>
@@ -50,7 +50,7 @@ export function Approach() {
               transition={withDelay(800)}
               whileHover={{ scale: 0.95 }}
               whileTap={{ scale: 0.9 }}
-              className="px-8 py-4 bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded-full font-medium flex items-center gap-2 hover:shadow-lg hover:shadow-purple-500/25 transition-shadow"
+              className="px-8 py-4 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-full font-medium flex items-center gap-2 hover:shadow-lg hover:shadow-orange-500/25 transition-shadow"
             >
               Discover Now
               <ArrowRight className="w-5 h-5" />
@@ -65,8 +65,8 @@ export function Approach() {
               transition={withDelay(400)}
               className="glass-card p-6 inline-flex items-center gap-4 mt-8"
             >
-              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-500/20 to-blue-500/20 flex items-center justify-center">
-                <Zap className="w-7 h-7 text-purple-400" />
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-orange-500/20 to-red-500/20 flex items-center justify-center">
+                <Zap className="w-7 h-7 text-orange-400" />
               </div>
               <div>
                 <div className="text-3xl font-bold text-white">{count}%</div>
@@ -101,7 +101,7 @@ export function Approach() {
                   <div className="absolute bottom-0 left-0 right-0 p-6 space-y-4">
                     <div className="glass-card p-4">
                       <div className="flex items-center gap-3 mb-3">
-                        <div className="w-10 h-10 rounded-full bg-gradient-to-r from-purple-500 to-blue-500" />
+                        <div className="w-10 h-10 rounded-full bg-gradient-to-r from-orange-500 to-red-500" />
                         <div>
                           <div className="w-24 h-3 bg-white/20 rounded" />
                           <div className="w-16 h-2 bg-white/10 rounded mt-1" />
@@ -114,7 +114,7 @@ export function Approach() {
                     </div>
                     
                     <div className="flex gap-2">
-                      <div className="flex-1 h-12 rounded-xl bg-gradient-to-r from-purple-500 to-blue-500" />
+                      <div className="flex-1 h-12 rounded-xl bg-gradient-to-r from-orange-500 to-red-500" />
                       <div className="w-12 h-12 rounded-xl bg-white/10" />
                     </div>
                   </div>
@@ -137,7 +137,7 @@ export function Approach() {
                 transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
                 className="absolute -left-8 bottom-1/3 glass-card p-3"
               >
-                <div className="w-8 h-8 rounded-lg bg-gradient-to-r from-purple-400 to-pink-500 flex items-center justify-center">
+                <div className="w-8 h-8 rounded-lg bg-gradient-to-r from-orange-400 to-pink-500 flex items-center justify-center">
                   <span className="text-white text-lg">⚡</span>
                 </div>
               </motion.div>

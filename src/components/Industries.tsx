@@ -113,9 +113,9 @@ const industries: IndustryCardData[] = [
     image: 'https://images.unsplash.com/photo-1555848962-6e79363ec58f?w=400&auto=format&fit=crop&q=60',
   },
   {
-    title: 'Healthcare',
-    meta: 'Health Tech',
-    description: 'Patient management, telemedicine, and medical records',
+    title: 'Hotel Management',
+    meta: 'Hospitality',
+    description: 'Hotel  management systems, room booking, and guest services',
     icon: HeartPulse,
     image: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=400&auto=format&fit=crop&q=60',
   },
@@ -228,8 +228,8 @@ export function Industries() {
     <section id="industries" className="py-24 relative overflow-hidden bg-slate-950" ref={sectionRef}>
       {/* Background Effects */}
       <div className="absolute inset-0 bg-slate-950" />
-      <div className="absolute top-1/2 right-0 w-96 h-96 bg-blue-500/10 rounded-full blur-[128px] pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-64 h-64 bg-purple-500/10 rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute top-1/2 right-0 w-96 h-96 bg-orange-500/10 rounded-full blur-[128px] pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-64 h-64 bg-red-500/10 rounded-full blur-[100px] pointer-events-none" />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 

@@ -54,7 +54,7 @@ export function Teams() {
             className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4"
           >
             Meet Our{' '}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-400">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-red-400">
               Team
             </span>
           </motion.h2>
@@ -108,7 +108,7 @@ export function Teams() {
                   {/* Content */}
                   <div className="absolute bottom-0 left-0 right-0 p-6">
                     <h3 className="text-xl font-bold text-white mb-1">{member.name}</h3>
-                    <p className="text-purple-400 text-sm mb-4">{member.role}</p>
+                    <p className="text-orange-400 text-sm mb-4">{member.role}</p>
                     
                     {/* Social Links */}
                     <div className="flex gap-3 opacity-0 group-hover:opacity-100 transition-opacity transform translate-y-4 group-hover:translate-y-0 duration-300">
@@ -116,7 +116,7 @@ export function Teams() {
                         href={member.social.linkedin}
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.9 }}
-                        className="w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center hover:bg-purple-500 transition-colors"
+                        className="w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center hover:bg-orange-500 transition-colors"
                       >
                         <Linkedin className="w-5 h-5 text-white" />
                       </motion.a>
@@ -124,7 +124,7 @@ export function Teams() {
                         href={member.social.twitter}
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.9 }}
-                        className="w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center hover:bg-purple-500 transition-colors"
+                        className="w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center hover:bg-orange-500 transition-colors"
                       >
                         <Twitter className="w-5 h-5 text-white" />
                       </motion.a>
@@ -132,7 +132,7 @@ export function Teams() {
                         href={member.social.github}
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.9 }}
-                        className="w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center hover:bg-purple-500 transition-colors"
+                        className="w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center hover:bg-orange-500 transition-colors"
                       >
                         <Github className="w-5 h-5 text-white" />
                       </motion.a>

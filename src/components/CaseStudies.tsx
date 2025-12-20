@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { useRef } from 'react';
 import { useInView } from 'framer-motion';
-import { ArrowRight, ExternalLink } from 'lucide-react';
+import { ExternalLink } from 'lucide-react';
 import { zoomIn, fadeInRight, fadeInLeft, fadeInDown, withDelay, withSlowDelay } from '@/lib/animations';
 
 const caseStudies = [
@@ -45,7 +45,7 @@ export function CaseStudies() {
     <section id="case-studies" className="py-20 relative overflow-hidden" ref={ref}>
       {/* Background */}
       <div className="absolute inset-0 bg-gradient-to-b from-slate-900/95 to-slate-900" />
-      <div className="absolute bottom-0 left-1/3 w-96 h-96 bg-purple-500/20 rounded-full filter blur-[128px]" />
+      <div className="absolute bottom-0 left-1/3 w-96 h-96 bg-orange-500/20 rounded-full filter blur-[128px]" />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
@@ -58,11 +58,11 @@ export function CaseStudies() {
             className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4"
           >
             Our{' '}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-400">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-red-400">
               Case Studies
             </span>
           </motion.h2>
-          
+
           <motion.p
             variants={fadeInDown}
             initial="hidden"
@@ -79,7 +79,7 @@ export function CaseStudies() {
           {caseStudies.map((study, index) => {
             const variants = index === 0 ? fadeInRight : index === 1 ? fadeInDown : fadeInLeft;
             const delay = index === 0 ? 900 : index === 1 ? 0 : 900;
-            
+
             return (
               <motion.div
                 key={study.title}
@@ -88,7 +88,7 @@ export function CaseStudies() {
                 animate={isInView ? "visible" : "hidden"}
                 transition={withSlowDelay(delay)}
                 whileHover={{ y: -10 }}
-                className="group relative bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl overflow-hidden hover:border-purple-500/50 transition-all duration-300"
+                className="group relative bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl overflow-hidden hover:border-orange-500/50 transition-all duration-300"
               >
                 {/* Image */}
                 <div className="relative h-48 overflow-hidden">
@@ -98,10 +98,10 @@ export function CaseStudies() {
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/50 to-transparent" />
-                  
+
                   {/* Category Badge */}
                   <div className="absolute top-4 left-4">
-                    <span className="px-3 py-1 text-xs font-medium text-white bg-purple-500/80 backdrop-blur-sm rounded-full">
+                    <span className="px-3 py-1 text-xs font-medium text-white bg-orange-500/80 backdrop-blur-sm rounded-full">
                       {study.category}
                     </span>
                   </div>
@@ -118,10 +118,10 @@ export function CaseStudies() {
 
                 {/* Content */}
                 <div className="p-6">
-                  <h3 className="text-xl font-bold text-white mb-2 group-hover:text-purple-400 transition-colors">
+                  <h3 className="text-xl font-bold text-white mb-2 group-hover:text-orange-400 transition-colors">
                     {study.title}
                   </h3>
-                  
+
                   <p className="text-gray-400 text-sm mb-4">
                     {study.description}
                   </p>
@@ -130,20 +130,13 @@ export function CaseStudies() {
                   <div className="flex gap-6 mb-4">
                     {study.stats.map((stat) => (
                       <div key={stat.label}>
-                        <div className="text-lg font-bold text-purple-400">{stat.value}</div>
+                        <div className="text-lg font-bold text-orange-400">{stat.value}</div>
                         <div className="text-xs text-gray-500">{stat.label}</div>
                       </div>
                     ))}
                   </div>
 
-                  {/* View Button */}
-                  <motion.button
-                    whileHover={{ x: 5 }}
-                    className="flex items-center gap-2 text-purple-400 font-medium text-sm group/btn"
-                  >
-                    View Case Study
-                    <ArrowRight className="w-4 h-4 transition-transform group-hover/btn:translate-x-1" />
-                  </motion.button>
+
                 </div>
               </motion.div>
             );
@@ -151,22 +144,7 @@ export function CaseStudies() {
         </div>
 
         {/* View All Button */}
-        <motion.div
-          variants={fadeInDown}
-          initial="hidden"
-          animate={isInView ? "visible" : "hidden"}
-          transition={withDelay(800)}
-          className="flex justify-center mt-12"
-        >
-          <motion.button
-            whileHover={{ scale: 0.95 }}
-            whileTap={{ scale: 0.9 }}
-            className="px-8 py-4 border border-white/20 text-white rounded-full font-medium hover:bg-white/5 transition-colors flex items-center gap-2"
-          >
-            All Case Studies
-            <ArrowRight className="w-5 h-5" />
-          </motion.button>
-        </motion.div>
+
       </div>
     </section>
   );

@@ -11,3 +11,4 @@ export { ServiceDetails } from './ServiceDetails';
 export { Testimonials } from './Testimonials';
 export { Contact } from './Contact';
 export { Footer } from './Footer';
+export { CustomCursor } from './CustomCursor';

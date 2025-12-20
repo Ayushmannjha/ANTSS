@@ -87,7 +87,7 @@ export function ServiceDetails() {
     <section className="py-20 relative overflow-hidden" ref={ref}>
       {/* Background */}
       <div className="absolute inset-0 bg-gradient-to-b from-slate-900/95 to-slate-900" />
-      <div className="absolute top-1/3 right-0 w-72 h-72 bg-blue-500/20 rounded-full filter blur-[100px]" />
+      <div className="absolute top-1/3 right-0 w-72 h-72 bg-red-500/20 rounded-full filter blur-[100px]" />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
@@ -100,7 +100,7 @@ export function ServiceDetails() {
             className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4"
           >
             Our{' '}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-400">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-red-400">
               Process
             </span>
           </motion.h2>
@@ -129,11 +129,11 @@ export function ServiceDetails() {
               className="glass-card p-6 relative group"
             >
               {/* Step Number */}
-              <div className="absolute -top-3 -left-3 w-8 h-8 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 flex items-center justify-center text-white font-bold text-sm">
+              <div className="absolute -top-3 -left-3 w-8 h-8 rounded-full bg-gradient-to-r from-orange-500 to-red-500 flex items-center justify-center text-white font-bold text-sm">
                 {index + 1}
               </div>
 
-              <h3 className="text-xl font-bold text-white mb-3 group-hover:text-purple-400 transition-colors">
+              <h3 className="text-xl font-bold text-white mb-3 group-hover:text-orange-400 transition-colors">
                 {service.title}
               </h3>
               
@@ -150,7 +150,7 @@ export function ServiceDetails() {
                     transition={{ delay: (service.delay + featureIndex * 100) / 1000 }}
                     className="flex items-center gap-2 text-sm"
                   >
-                    <Circle className="w-2 h-2 text-purple-400 fill-purple-400" />
+                    <Circle className="w-2 h-2 text-orange-400 fill-orange-400" />
                     <span className="text-gray-300">{feature}</span>
                   </motion.li>
                 ))}
@@ -158,8 +158,8 @@ export function ServiceDetails() {
 
               {/* Hover indicator */}
               <div className="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                <div className="w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center">
-                  <Check className="w-4 h-4 text-purple-400" />
+                <div className="w-8 h-8 rounded-full bg-orange-500/20 flex items-center justify-center">
+                  <Check className="w-4 h-4 text-orange-400" />
                 </div>
               </div>
             </motion.div>

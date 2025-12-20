@@ -2,26 +2,10 @@ import { motion } from 'framer-motion';
 import { useRef } from 'react';
 import { useInView } from 'framer-motion';
 import { zoomIn, fadeInDown, fadeInRight, fadeInLeft, fadeInUp, withDelay } from '@/lib/animations';
-import { useCountUp } from '@/hooks/useAnimations';
 
-const stats = [
-  { value: 99, suffix: '%', label: 'Client Satisfaction' },
-  { value: 150, suffix: '+', label: 'Team Members' },
-  { value: 12, suffix: '+', label: 'Years Experience' },
-];
 
-function StatCounter({ stat }: { stat: typeof stats[0] }) {
-  const { count, ref } = useCountUp(stat.value);
-  
-  return (
-    <div ref={ref} className="text-center">
-      <div className="text-3xl font-bold text-white">
-        {count}{stat.suffix}
-      </div>
-      <div className="text-sm text-gray-400">{stat.label}</div>
-    </div>
-  );
-}
+
+
 
 export function WhyChooseUs() {
   const ref = useRef(null);
@@ -31,8 +15,8 @@ export function WhyChooseUs() {
     <section className="py-20 relative overflow-hidden" ref={ref}>
       {/* Background */}
       <div className="absolute inset-0 bg-gradient-to-b from-slate-900 to-slate-900/95" />
-      <div className="absolute top-1/3 left-1/4 w-72 h-72 bg-purple-500/20 rounded-full filter blur-[100px]" />
-      <div className="absolute bottom-1/3 right-1/4 w-72 h-72 bg-blue-500/20 rounded-full filter blur-[100px]" />
+      <div className="absolute top-1/3 left-1/4 w-72 h-72 bg-orange-500/20 rounded-full filter blur-[100px]" />
+      <div className="absolute bottom-1/3 right-1/4 w-72 h-72 bg-red-500/20 rounded-full filter blur-[100px]" />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
@@ -45,11 +29,11 @@ export function WhyChooseUs() {
             className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4"
           >
             Why{' '}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-400">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-red-500">
               Choose Us
             </span>
           </motion.h2>
-          
+
           <motion.p
             variants={fadeInDown}
             initial="hidden"
@@ -103,15 +87,8 @@ export function WhyChooseUs() {
               className="w-full h-64 lg:h-full object-cover transition-transform duration-500 group-hover:scale-105"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent" />
-            
-            {/* Glass Card Overlay */}
-            <div className="absolute bottom-4 left-4 right-4 glass-card p-4">
-              <div className="grid grid-cols-3 gap-4">
-                {stats.map((stat) => (
-                  <StatCounter key={stat.label} stat={stat} />
-                ))}
-              </div>
-            </div>
+
+
           </motion.div>
 
           {/* Right Image */}
@@ -190,8 +167,8 @@ export function WhyChooseUs() {
               transition={withDelay(1200 + index * 200)}
               className="text-center"
             >
-              <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-purple-500/20 to-blue-500/20 flex items-center justify-center">
-                <div className="w-3 h-3 rounded-full bg-gradient-to-r from-purple-500 to-blue-500" />
+              <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-orange-500/20 to-red-500/20 flex items-center justify-center">
+                <div className="w-3 h-3 rounded-full bg-gradient-to-r from-orange-500 to-red-500" />
               </div>
               <h3 className="text-white font-semibold mb-2">{feature.title}</h3>
               <p className="text-gray-400 text-sm">{feature.desc}</p>

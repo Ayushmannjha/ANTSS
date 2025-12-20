@@ -76,22 +76,8 @@ export function Hero() {
             >
               <div className="text-sm text-gray-400 uppercase tracking-widest mb-1">Evaluation & Design</div>
               <div className="text-white font-bold text-lg">Custom Software</div>
-              <div className="text-gray-400 text-sm mt-2">Web Development</div>
             </motion.div>
 
-            {/* Floating Card 2 - Experience */}
-            <motion.div
-              initial={{ x: 50, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              transition={{ delay: 1.4, duration: 0.8 }}
-              className="absolute -right-4 md:-right-10 bottom-1/4 glass-card p-8 rounded-2xl flex items-center gap-4 hidden md:flex border-r-4 border-r-primary"
-            >
-              <span className="text-5xl font-bold text-white gradient-text">12+</span>
-              <div className="flex flex-col text-sm text-gray-300">
-                <span>Years Of</span>
-                <span>Experience</span>
-              </div>
-            </motion.div>
 
           </motion.div>
         </motion.div>

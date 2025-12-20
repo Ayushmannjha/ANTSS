@@ -57,7 +57,7 @@ export function Testimonials() {
     <section className="py-20 relative overflow-hidden" ref={ref}>
       {/* Background */}
       <div className="absolute inset-0 bg-gradient-to-b from-slate-900 to-slate-900/95" />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-purple-500/10 rounded-full filter blur-[128px]" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-orange-500/10 rounded-full filter blur-[128px]" />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
@@ -70,7 +70,7 @@ export function Testimonials() {
             className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4"
           >
             Client{' '}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-400">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-red-400">
               Testimonials
             </span>
           </motion.h2>
@@ -114,9 +114,9 @@ export function Testimonials() {
                 transition={withDelay(index * 200)}
                 className={`relative ${isFeatured ? 'md:-mt-8 md:mb-8' : ''}`}
               >
-                <div className={`h-full ${isFeatured ? 'bg-gradient-to-br from-purple-500/20 to-blue-500/20' : 'bg-white/5'} backdrop-blur-sm border border-white/10 rounded-2xl p-6 ${isFeatured ? 'border-purple-500/30' : ''}`}>
+                <div className={`h-full ${isFeatured ? 'bg-gradient-to-br from-orange-500/20 to-red-500/20' : 'bg-white/5'} backdrop-blur-sm border border-white/10 rounded-2xl p-6 ${isFeatured ? 'border-orange-500/30' : ''}`}>
                   {/* Quote Icon */}
-                  <Quote className={`w-10 h-10 ${isFeatured ? 'text-purple-400' : 'text-gray-600'} mb-4`} />
+                  <Quote className={`w-10 h-10 ${isFeatured ? 'text-orange-400' : 'text-gray-600'} mb-4`} />
                   
                   {/* Quote */}
                   <p className={`${isFeatured ? 'text-white' : 'text-gray-300'} mb-6 ${isFeatured ? 'text-lg' : ''}`}>

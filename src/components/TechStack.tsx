@@ -97,7 +97,7 @@ export function TechStack() {
     <section className="py-20 relative overflow-hidden" ref={ref}>
       {/* Background */}
       <div className="absolute inset-0 bg-gradient-to-b from-slate-900/95 to-slate-900" />
-      <div className="absolute top-1/2 right-0 w-72 h-72 bg-purple-500/20 rounded-full filter blur-[100px]" />
+      <div className="absolute top-1/2 right-0 w-72 h-72 bg-orange-500/20 rounded-full filter blur-[100px]" />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
@@ -109,7 +109,7 @@ export function TechStack() {
           className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-12"
         >
           Our{' '}
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-400">
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-red-400">
             Tech Stack
           </span>
         </motion.h2>
@@ -123,7 +123,7 @@ export function TechStack() {
               whileHover={{ scale: 0.95 }}
               whileTap={{ scale: 0.9 }}
               className={`px-6 py-3 rounded-xl font-medium transition-all duration-300 ${activeTab === tab.id
-                  ? 'bg-gradient-to-r from-purple-500 to-blue-500 text-white'
+                  ? 'bg-gradient-to-r from-orange-500 to-red-500 text-white'
                   : 'bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white'
                 }`}
             >
