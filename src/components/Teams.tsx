@@ -6,21 +6,21 @@ import { zoomIn, fadeInLeft, fadeInRight, fadeInDown, withDelay } from '@/lib/an
 
 const teamMembers = [
   {
-    name: 'Sarah Johnson',
+    name: 'Nishu Jha',
     role: 'CEO & Founder',
-    image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&auto=format&fit=crop&q=60',
+    image: '/ceo1.png',
     social: { linkedin: '#', twitter: '#', github: '#' },
   },
   {
-    name: 'Michael Chen',
+    name: 'Rahul Srivastava',
     role: 'CTO',
-    image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&auto=format&fit=crop&q=60',
+    image: '/cte2.png',
     social: { linkedin: '#', twitter: '#', github: '#' },
   },
   {
     name: 'Emily Rodriguez',
-    role: 'Lead Designer',
-    image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&auto=format&fit=crop&q=60',
+    role: 'CMO',
+    image: '/market2.png',
     social: { linkedin: '#', twitter: '#', github: '#' },
   },
 ];
@@ -30,10 +30,10 @@ export function Teams() {
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
   return (
-    <section id="team" className="py-20 relative overflow-hidden" ref={ref}>
+    <section id="team" className="py-16 sm:py-20 relative overflow-hidden" ref={ref}>
       {/* Background */}
       <div className="absolute inset-0 bg-gradient-to-b from-slate-900 to-slate-900/95" />
-      
+
       {/* Team Photo Background */}
       <div className="absolute inset-0 opacity-10">
         <img
@@ -45,7 +45,7 @@ export function Teams() {
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <div className="text-center mb-16">
+        <div className="text-center mb-12 sm:mb-16">
           <motion.h2
             variants={zoomIn}
             initial="hidden"
@@ -58,24 +58,24 @@ export function Teams() {
               Team
             </span>
           </motion.h2>
-          
+
           <motion.p
             variants={fadeInDown}
             initial="hidden"
             animate={isInView ? "visible" : "hidden"}
             transition={withDelay(500)}
-            className="text-gray-400 max-w-2xl mx-auto"
+            className="text-gray-400 max-w-2xl mx-auto text-base sm:text-lg"
           >
             Our talented team of professionals is dedicated to delivering exceptional results.
           </motion.p>
         </div>
 
         {/* Team Cards */}
-        <div className="grid md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
           {teamMembers.map((member, index) => {
             const variants = index === 0 ? fadeInLeft : index === 1 ? fadeInDown : fadeInRight;
             const delay = index === 0 ? 400 : index === 1 ? 0 : 400;
-            
+
             return (
               <motion.div
                 key={member.name}
@@ -84,7 +84,7 @@ export function Teams() {
                 animate={isInView ? "visible" : "hidden"}
                 transition={withDelay(delay)}
                 whileHover={{ y: -10 }}
-                className="group relative"
+                className="group relative sm:last:col-span-2 lg:last:col-span-1 sm:last:w-[90%] sm:last:mx-auto lg:last:w-full"
               >
                 {/* Card */}
                 <div className="relative rounded-2xl overflow-hidden">
@@ -98,18 +98,18 @@ export function Teams() {
                     <img
                       src={member.image}
                       alt={member.name}
-                      className="w-full h-96 object-cover transition-transform duration-500 group-hover:scale-110"
+                      className="w-full h-80 sm:h-96 object-cover transition-transform duration-500 group-hover:scale-110"
                     />
                   </motion.div>
-                  
+
                   {/* Gradient Overlay */}
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/50 to-transparent opacity-80 group-hover:opacity-90 transition-opacity" />
-                  
+
                   {/* Content */}
                   <div className="absolute bottom-0 left-0 right-0 p-6">
                     <h3 className="text-xl font-bold text-white mb-1">{member.name}</h3>
                     <p className="text-orange-400 text-sm mb-4">{member.role}</p>
-                    
+
                     {/* Social Links */}
                     <div className="flex gap-3 opacity-0 group-hover:opacity-100 transition-opacity transform translate-y-4 group-hover:translate-y-0 duration-300">
                       <motion.a

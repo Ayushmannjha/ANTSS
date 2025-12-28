@@ -34,6 +34,15 @@ export function Footer() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const handleNavClick = (href: string) => {
+    if (href.startsWith('#')) {
+      const element = document.querySelector(href);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  };
+
   return (
     <footer className="relative pt-20 pb-10 overflow-hidden">
       {/* Background */}
@@ -45,18 +54,18 @@ export function Footer() {
         <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-12 mb-16">
           {/* Brand Column */}
           <div className="lg:col-span-2">
-            <motion.a
-              href="#home"
+            <motion.button
+              onClick={() => handleNavClick('#home')}
               className="flex items-center gap-2 mb-6"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
               <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-red-500 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-xl">P</span>
+                <span className="text-white font-bold text-xl">A</span>
               </div>
-              <span className="text-white font-bold text-xl">Pemogan</span>
-            </motion.a>
-            
+              <span className="text-white font-bold text-xl">ANTSS</span>
+            </motion.button>
+
             <p className="text-gray-400 mb-6 max-w-sm">
               Transforming ideas into powerful digital solutions. We build software that drives growth and innovation.
             </p>
@@ -86,13 +95,13 @@ export function Footer() {
             <ul className="space-y-3">
               {footerLinks.company.map((link) => (
                 <li key={link.name}>
-                  <motion.a
-                    href={link.href}
+                  <motion.button
+                    onClick={() => handleNavClick(link.href)}
                     whileHover={{ x: 5 }}
-                    className="text-gray-400 hover:text-white transition-colors"
+                    className="text-gray-400 hover:text-white transition-colors text-left"
                   >
                     {link.name}
-                  </motion.a>
+                  </motion.button>
                 </li>
               ))}
             </ul>
@@ -103,13 +112,13 @@ export function Footer() {
             <ul className="space-y-3">
               {footerLinks.services.map((link) => (
                 <li key={link.name}>
-                  <motion.a
-                    href={link.href}
+                  <motion.button
+                    onClick={() => handleNavClick(link.href)}
                     whileHover={{ x: 5 }}
-                    className="text-gray-400 hover:text-white transition-colors"
+                    className="text-gray-400 hover:text-white transition-colors text-left"
                   >
                     {link.name}
-                  </motion.a>
+                  </motion.button>
                 </li>
               ))}
             </ul>
@@ -120,13 +129,13 @@ export function Footer() {
             <ul className="space-y-3">
               {footerLinks.support.map((link) => (
                 <li key={link.name}>
-                  <motion.a
-                    href={link.href}
+                  <motion.button
+                    onClick={() => handleNavClick(link.href)}
                     whileHover={{ x: 5 }}
-                    className="text-gray-400 hover:text-white transition-colors"
+                    className="text-gray-400 hover:text-white transition-colors text-left"
                   >
                     {link.name}
-                  </motion.a>
+                  </motion.button>
                 </li>
               ))}
             </ul>
@@ -139,9 +148,9 @@ export function Footer() {
         {/* Bottom Footer */}
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-gray-400 text-sm">
-            © {new Date().getFullYear()} Pemogan. All rights reserved.
+            © {new Date().getFullYear()} ANTSS. All rights reserved.
           </p>
-          
+
           <div className="flex items-center gap-6">
             <a href="#" className="text-gray-400 hover:text-white text-sm transition-colors">
               Terms of Service

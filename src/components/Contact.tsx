@@ -1,32 +1,44 @@
-import { motion } from 'framer-motion';
 import { useRef, useState } from 'react';
-import { useInView } from 'framer-motion';
+import { motion, useInView } from 'framer-motion';
 import { Send, MapPin, Phone, Mail } from 'lucide-react';
+import emailjs from '@emailjs/browser';
 import { fadeInDown, fadeIn, withDelay } from '@/lib/animations';
 
 export function Contact() {
   const ref = useRef(null);
+  const formRef = useRef<HTMLFormElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    subject: '',
-    message: '',
-  });
+
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
-    // Simulate form submission
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    setIsSubmitting(false);
-    setFormData({ name: '', email: '', subject: '', message: '' });
-    alert('Message sent successfully!');
-  };
+    if (!formRef.current) return;
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
+    setIsSubmitting(true);
+    setSubmitStatus('idle');
+
+    try {
+      // EmailJS credentials from .env file
+      const result = await emailjs.sendForm(
+        import.meta.env.VITE_EMAILJS_SERVICE_ID,
+        import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
+        formRef.current,
+        import.meta.env.VITE_EMAILJS_PUBLIC_KEY
+      );
+
+      console.log(result.text);
+      setSubmitStatus('success');
+      formRef.current.reset();
+      alert('Message sent successfully!');
+    } catch (error) {
+      console.error(error);
+      setSubmitStatus('error');
+      alert('Failed to send message. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -50,7 +62,7 @@ export function Contact() {
               Touch
             </span>
           </motion.h2>
-          
+
           <motion.p
             variants={fadeInDown}
             initial="hidden"
@@ -70,7 +82,7 @@ export function Contact() {
             animate={isInView ? "visible" : "hidden"}
             transition={withDelay(400)}
           >
-            <form onSubmit={handleSubmit} className="glass-card p-8 space-y-6">
+            <form ref={formRef} onSubmit={handleSubmit} className="glass-card p-8 space-y-6">
               <div className="grid sm:grid-cols-2 gap-6">
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
@@ -83,15 +95,13 @@ export function Contact() {
                   <input
                     type="text"
                     id="name"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
+                    name="user_name" // specific name for EmailJS usually
                     required
                     className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-colors"
                     placeholder="John Doe"
                   />
                 </motion.div>
-                
+
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={isInView ? { opacity: 1, y: 0 } : {}}
@@ -103,9 +113,7 @@ export function Contact() {
                   <input
                     type="email"
                     id="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
+                    name="user_email" // specific name for EmailJS usually
                     required
                     className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-colors"
                     placeholder="john@example.com"
@@ -125,8 +133,6 @@ export function Contact() {
                   type="text"
                   id="subject"
                   name="subject"
-                  value={formData.subject}
-                  onChange={handleChange}
                   required
                   className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-colors"
                   placeholder="Project Inquiry"
@@ -144,8 +150,6 @@ export function Contact() {
                 <textarea
                   id="message"
                   name="message"
-                  value={formData.message}
-                  onChange={handleChange}
                   required
                   rows={5}
                   className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-colors resize-none"
@@ -172,6 +176,14 @@ export function Contact() {
                   </>
                 )}
               </motion.button>
+
+              {submitStatus === 'success' && (
+                <p className="text-green-500 text-center text-sm mt-2">Message sent successfully!</p>
+              )}
+              {submitStatus === 'error' && (
+                <p className="text-red-500 text-center text-sm mt-2">Something went wrong. Please try again.</p>
+              )}
+
             </form>
           </motion.div>
 
@@ -206,7 +218,7 @@ export function Contact() {
                 </div>
                 <div>
                   <div className="text-white font-medium">Location</div>
-                  <div className="text-gray-400 text-sm">San Francisco, CA</div>
+                  <div className="text-gray-400 text-sm">dakbanglow chauraha Mauryalok complex bhub,Patna , bihar</div>
                 </div>
               </motion.div>
 
@@ -236,7 +248,7 @@ export function Contact() {
                 </div>
                 <div>
                   <div className="text-white font-medium">Email</div>
-                  <div className="text-gray-400 text-sm">hello@pemogan.com</div>
+                  <div className="text-gray-400 text-sm">Contact@antss.in</div>
                 </div>
               </motion.div>
             </div>

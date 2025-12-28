@@ -29,10 +29,13 @@ export function Header() {
 
   const handleNavClick = (href: string) => {
     setMobileMenuOpen(false);
-    const element = document.querySelector(href);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
+    // Small delay to allow menu close animation and body overflow reset
+    setTimeout(() => {
+      const element = document.querySelector(href);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    }, 100);
   };
 
   return (
@@ -55,9 +58,9 @@ export function Header() {
             whileTap={{ scale: 0.95 }}
           >
             <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-red-500 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-xl">P</span>
+              <span className="text-white font-bold text-xl">A</span>
             </div>
-            <span className="text-white font-bold text-xl hidden sm:block">Pemogan</span>
+            <span className="text-white font-bold text-xl hidden sm:block">ANTSS</span>
           </motion.a>
 
           {/* Desktop Navigation */}
@@ -75,15 +78,6 @@ export function Header() {
               </motion.button>
             ))}
           </nav>
-
-          {/* CTA Button */}
-          <motion.button
-            whileHover={{ scale: 0.95 }}
-            whileTap={{ scale: 0.9 }}
-            className="hidden lg:block px-6 py-2.5 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-full font-medium hover:shadow-lg hover:shadow-orange-500/25 transition-shadow"
-          >
-            Get Started
-          </motion.button>
 
           {/* Mobile Menu Button */}
           <motion.button
@@ -122,17 +116,7 @@ export function Header() {
               {item.name}
             </motion.button>
           ))}
-          <motion.button
-            initial={{ x: -20, opacity: 0 }}
-            animate={{
-              x: mobileMenuOpen ? 0 : -20,
-              opacity: mobileMenuOpen ? 1 : 0,
-            }}
-            transition={{ delay: navItems.length * 0.1 }}
-            className="w-full px-6 py-2.5 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-full font-medium mt-4"
-          >
-            Get Started
-          </motion.button>
+
         </nav>
       </motion.div>
     </motion.header>
