@@ -53,14 +53,17 @@ export function Header() {
           {/* Logo */}
           <motion.a
             href="#home"
-            className="flex items-center gap-2"
+            className="flex items-center gap-1"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
-            <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-red-500 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-xl">A</span>
-            </div>
-            <span className="text-white font-bold text-xl hidden sm:block">ANTSS</span>
+            <span className="font-bold text-xl sm:text-2xl flex">
+              <span className="text-orange-500">A</span>
+              <span className="text-red-500">N</span>
+              <span className="text-amber-400">T</span>
+              <span className="text-orange-400">S</span>
+              <span className="text-red-400">S</span>
+            </span>
           </motion.a>
 
           {/* Desktop Navigation */}
