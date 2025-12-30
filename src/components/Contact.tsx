@@ -233,7 +233,7 @@ export function Contact() {
                 </div>
                 <div>
                   <div className="text-white font-medium">Phone</div>
-                  <div className="text-gray-400 text-sm">+1 (555) 123-4567</div>
+                  <div className="text-gray-400 text-sm">+91 85440 90329</div>
                 </div>
               </motion.div>
 

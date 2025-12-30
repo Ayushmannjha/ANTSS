@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { useRef } from 'react';
 import { useInView } from 'framer-motion';
-import { Linkedin, Twitter, Github } from 'lucide-react';
+
 import { zoomIn, fadeInLeft, fadeInRight, fadeInDown, withDelay } from '@/lib/animations';
 
 const teamMembers = [
@@ -9,19 +9,19 @@ const teamMembers = [
     name: 'Nishu Jha',
     role: 'CEO & Founder',
     image: '/ceo1.png',
-    social: { linkedin: '#', twitter: '#', github: '#' },
+
   },
-  {
-    name: 'Rahul Srivastava',
-    role: 'CTO',
-    image: '/cte2.png',
-    social: { linkedin: '#', twitter: '#', github: '#' },
-  },
+
   {
     name: 'Emily Rodriguez',
     role: 'CMO',
     image: '/market2.png',
-    social: { linkedin: '#', twitter: '#', github: '#' },
+
+  }, {
+    name: 'Rahul Srivastava',
+    role: 'CTO',
+    image: '/cte2.png',
+
   },
 ];
 
@@ -110,33 +110,7 @@ export function Teams() {
                     <h3 className="text-xl font-bold text-white mb-1">{member.name}</h3>
                     <p className="text-orange-400 text-sm mb-4">{member.role}</p>
 
-                    {/* Social Links */}
-                    <div className="flex gap-3 opacity-0 group-hover:opacity-100 transition-opacity transform translate-y-4 group-hover:translate-y-0 duration-300">
-                      <motion.a
-                        href={member.social.linkedin}
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.9 }}
-                        className="w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center hover:bg-orange-500 transition-colors"
-                      >
-                        <Linkedin className="w-5 h-5 text-white" />
-                      </motion.a>
-                      <motion.a
-                        href={member.social.twitter}
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.9 }}
-                        className="w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center hover:bg-orange-500 transition-colors"
-                      >
-                        <Twitter className="w-5 h-5 text-white" />
-                      </motion.a>
-                      <motion.a
-                        href={member.social.github}
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.9 }}
-                        className="w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center hover:bg-orange-500 transition-colors"
-                      >
-                        <Github className="w-5 h-5 text-white" />
-                      </motion.a>
-                    </div>
+
                   </div>
                 </div>
               </motion.div>

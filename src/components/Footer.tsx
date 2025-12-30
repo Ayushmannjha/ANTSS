@@ -2,17 +2,12 @@ import { motion } from 'framer-motion';
 import { Github, Twitter, Linkedin, Instagram, ArrowUp } from 'lucide-react';
 
 const footerLinks = {
-  company: [
-    { name: 'About Us', href: '#' },
-    { name: 'Careers', href: '#' },
-    { name: 'Blog', href: '#' },
-    { name: 'Press', href: '#' },
-  ],
+
   services: [
-    { name: 'Web Development', href: '#' },
-    { name: 'Mobile Apps', href: '#' },
-    { name: 'Custom Software', href: '#' },
-    { name: 'UI/UX Design', href: '#' },
+    { name: 'Web Development', href: '#services' },
+    { name: 'Mobile Apps', href: '#services' },
+    { name: 'Custom Software', href: '#services' },
+    { name: 'UI/UX Design', href: '#services' },
   ],
   support: [
     { name: 'Help Center', href: '#' },
@@ -89,23 +84,7 @@ export function Footer() {
             </div>
           </div>
 
-          {/* Links Columns */}
-          <div>
-            <h4 className="text-white font-semibold mb-4">Company</h4>
-            <ul className="space-y-3">
-              {footerLinks.company.map((link) => (
-                <li key={link.name}>
-                  <motion.button
-                    onClick={() => handleNavClick(link.href)}
-                    whileHover={{ x: 5 }}
-                    className="text-gray-400 hover:text-white transition-colors text-left"
-                  >
-                    {link.name}
-                  </motion.button>
-                </li>
-              ))}
-            </ul>
-          </div>
+
 
           <div>
             <h4 className="text-white font-semibold mb-4">Services</h4>
