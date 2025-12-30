@@ -13,7 +13,7 @@ const teamMembers = [
   },
 
   {
-    name: 'Emily Rodriguez',
+    name: 'Amar Kumar',
     role: 'CMO',
     image: '/market2.png',
 
