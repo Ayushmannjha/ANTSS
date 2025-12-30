@@ -17,7 +17,7 @@ import {
 
 function App() {
   return (
-    <div className="min-h-screen bg-slate-900 text-white overflow-x-hidden cursor-none">
+    <div className="relative min-h-screen bg-slate-900 text-white overflow-x-hidden lg:cursor-none">
       <CustomCursor />
       <Header />
       <main>
