@@ -9,20 +9,20 @@ const testimonials = [
   {
     name: 'Manisha Shrivastava',
     role: 'Portfolio Website',
-    quote: 'The portfolio website perfectly reflects professionalism and creativity. The design is clean, responsive, and easy to navigate across all devices. It clearly presents skills and projects in a visually appealing way, making it an excellent personal branding platform.',
+    quote: 'Clean, responsive design that perfectly reflects professionalism and creativity.',
     rating: 5,
   },
   {
     name: 'Shreeaura',
     role: 'E-commerce Website',
-    quote: 'Shreeaura delivers a smooth and engaging shopping experience. The website is fast, intuitive, and well-structured, making product browsing and checkout effortless. The overall UI and functionality feel polished and aligned with real-world e-commerce standards.',
+    quote: 'Fast, intuitive shopping experience with polished UI and seamless checkout.',
     rating: 5,
     featured: true,
   },
   {
     name: 'Rozomeal',
     role: 'Food Delivery System',
-    quote: 'Rozomeal provides a seamless food ordering experience with a modern and responsive interface. The application is easy to use, visually appealing, and efficiently handles menu browsing and order placement, giving users a reliable food delivery platform.',
+    quote: 'Modern, responsive interface with seamless menu browsing and ordering.',
     rating: 5,
   },
 ];
