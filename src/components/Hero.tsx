@@ -23,94 +23,6 @@ const heroStats = [
   { icon: TrendingUp, value: "98%", label: "Success Rate" },
 ];
 
-// Particle Burst Effect
-const ParticleBurst = ({ color }: { color: string }) => {
-  return (
-    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none">
-      {[...Array(8)].map((_, i) => (
-        <motion.div
-          key={i}
-          className={`absolute w-1 h-1 rounded-full bg-gradient-to-r ${color}`}
-          initial={{ scale: 0, opacity: 1, x: 0, y: 0 }}
-          animate={{
-            scale: 0,
-            opacity: 0,
-            x: Math.cos(i * 45 * (Math.PI / 180)) * 60,
-            y: Math.sin(i * 45 * (Math.PI / 180)) * 60,
-          }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
-        />
-      ))}
-    </div>
-  );
-};
-
-// Mechanical Ant SVG Component
-const MechanicalAntSVG = ({ blockColor }: { blockColor: string }) => {
-  return (
-    <div className="relative w-12 h-12">
-      {/* Legs - Left */}
-      <motion.div
-        className="absolute left-1 top-3 w-4 h-0.5 bg-slate-400 origin-right"
-        animate={{ rotate: [20, -20, 20] }}
-        transition={{ duration: 0.4, repeat: Infinity, ease: "linear" }}
-      />
-      <motion.div
-        className="absolute left-0 top-6 w-5 h-0.5 bg-slate-400 origin-right"
-        animate={{ rotate: [-10, 20, -10] }}
-        transition={{ duration: 0.4, repeat: Infinity, ease: "linear", delay: 0.1 }}
-      />
-      <motion.div
-        className="absolute left-1 top-9 w-4 h-0.5 bg-slate-400 origin-right"
-        animate={{ rotate: [15, -25, 15] }}
-        transition={{ duration: 0.4, repeat: Infinity, ease: "linear", delay: 0.2 }}
-      />
-
-      {/* Legs - Right */}
-      <motion.div
-        className="absolute right-1 top-3 w-4 h-0.5 bg-slate-400 origin-left"
-        animate={{ rotate: [-20, 20, -20] }}
-        transition={{ duration: 0.4, repeat: Infinity, ease: "linear" }}
-      />
-      <motion.div
-        className="absolute right-0 top-6 w-5 h-0.5 bg-slate-400 origin-left"
-        animate={{ rotate: [10, -20, 10] }}
-        transition={{ duration: 0.4, repeat: Infinity, ease: "linear", delay: 0.1 }}
-      />
-      <motion.div
-        className="absolute right-1 top-9 w-4 h-0.5 bg-slate-400 origin-left"
-        animate={{ rotate: [-15, 25, -15] }}
-        transition={{ duration: 0.4, repeat: Infinity, ease: "linear", delay: 0.2 }}
-      />
-
-      {/* Body Segments */}
-      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full flex flex-col items-center justify-center">
-        {/* Head */}
-        <div className="w-3 h-3 bg-slate-800 rounded-full border border-slate-600 relative z-10">
-          <div className="absolute -top-2 -left-1 w-2 h-4 border-l border-slate-500 rounded-tl-full rotate-[-20deg]" /> {/* Antenna L */}
-          <div className="absolute -top-2 -right-1 w-2 h-4 border-r border-slate-500 rounded-tr-full rotate-[20deg]" /> {/* Antenna R */}
-        </div>
-        {/* Thorax */}
-        <div className="w-4 h-5 bg-slate-900 rounded-full border border-orange-500/50 -mt-1 z-10 relative">
-          <div className="absolute inset-0 bg-orange-500/20 blur-[1px] rounded-full animate-pulse" />
-        </div>
-        {/* Abdomen */}
-        <div className="w-5 h-7 bg-slate-800 rounded-full border border-slate-600 -mt-1 relative z-0">
-          <div className="absolute bottom-1 w-full h-[1px] bg-slate-600" />
-          <div className="absolute bottom-3 w-full h-[1px] bg-slate-600" />
-        </div>
-      </div>
-
-      {/* Carried Block */}
-      <motion.div
-        className={`absolute -top-3 left-1/2 -translate-x-1/2 w-5 h-5 rounded bg-gradient-to-br ${blockColor} shadow-[0_0_10px_rgba(249,115,22,0.6)] z-20 border border-white/20`}
-        animate={{ y: [-1, 1, -1] }}
-        transition={{ duration: 0.6, repeat: Infinity }}
-      />
-    </div>
-  );
-};
-
 // Keyword Builder - Ants Building Words Animation (Enhanced)
 const keywordsToBuild = [
   { word: "FAST", emoji: "⚡" },
@@ -254,8 +166,8 @@ function KeywordBuilder() {
             <motion.div
               key={i}
               className={`w-2 h-2 rounded-full transition-colors duration-300 ${i === currentWordIndex
-                  ? "bg-orange-500"
-                  : "bg-gray-600"
+                ? "bg-orange-500"
+                : "bg-gray-600"
                 }`}
               animate={i === currentWordIndex ? { scale: [1, 1.3, 1] } : {}}
               transition={{ duration: 0.5 }}
@@ -264,114 +176,6 @@ function KeywordBuilder() {
         </div>
       </motion.div>
     </div>
-  );
-}
-
-// Code Carrier Ants configuration with Curved Paths (Keyframes)
-const codeCarrierAnts = [
-  // Top Left to Center
-  {
-    id: 1,
-    pathX: ["-10%", "20%", "48%", "48%", "48%"],
-    pathY: ["20%", "60%", "48%", "48%", "48%"],
-    rotate: [20, 45, 0, 0, 0],
-    duration: 8,
-    delay: 0,
-    blockColor: "from-orange-500 to-red-500",
-    scaleX: 1
-  },
-  // Bottom Right to Center
-  {
-    id: 2,
-    pathX: ["110%", "80%", "52%", "52%", "52%"],
-    pathY: ["80%", "20%", "52%", "52%", "52%"],
-    rotate: [-45, -20, 0, 0, 0],
-    duration: 9,
-    delay: 2,
-    blockColor: "from-blue-500 to-cyan-500",
-    scaleX: -1
-  },
-  // Bottom Left to Center
-  {
-    id: 3,
-    pathX: ["-10%", "30%", "48%", "48%", "48%"],
-    pathY: ["80%", "30%", "52%", "52%", "52%"],
-    rotate: [-20, -45, 0, 0, 0],
-    duration: 10,
-    delay: 4,
-    blockColor: "from-green-500 to-emerald-500",
-    scaleX: 1
-  },
-  // Top Right to Center
-  {
-    id: 4,
-    pathX: ["110%", "70%", "52%", "52%", "52%"],
-    pathY: ["10%", "60%", "48%", "48%", "48%"],
-    rotate: [45, 20, 0, 0, 0],
-    duration: 8.5,
-    delay: 1.5,
-    blockColor: "from-purple-500 to-pink-500",
-    scaleX: -1
-  },
-  // Left Mid to Center
-  {
-    id: 5,
-    pathX: ["-10%", "25%", "48%", "48%", "48%"],
-    pathY: ["50%", "30%", "50%", "50%", "50%"],
-    rotate: [0, -20, 0, 0, 0],
-    duration: 9.5,
-    delay: 5.5,
-    blockColor: "from-yellow-500 to-orange-500",
-    scaleX: 1
-  },
-];
-
-function CodeCarrierAnt({ ant }: { ant: typeof codeCarrierAnts[0] }) {
-  // Removed unused state since burst is now timing-based
-
-  return (
-    <>
-      <motion.div
-        className="absolute z-20 pointer-events-none"
-        initial={{ left: ant.pathX[0], top: ant.pathY[0], opacity: 0 }}
-        animate={{
-          left: ant.pathX,
-          top: ant.pathY,
-          opacity: [0, 1, 1, 0, 0], // Fade out at very end
-        }}
-        transition={{
-          duration: ant.duration,
-          delay: ant.delay,
-          repeat: Infinity,
-          repeatDelay: 1,
-          times: [0, 0.5, 0.9, 0.95, 1],
-          ease: "easeInOut"
-        }}
-      >
-        <motion.div
-          animate={{ rotate: ant.rotate }}
-          transition={{ duration: ant.duration, repeat: Infinity, repeatDelay: 1, ease: "easeInOut" }}
-          style={{ scaleX: ant.scaleX }}
-        >
-          <MechanicalAntSVG blockColor={ant.blockColor} />
-        </motion.div>
-      </motion.div>
-
-      {/* Burst Effect - Triggered by separate animation to sync */}
-      <motion.div
-        className="absolute left-1/2 top-1/2 w-0 h-0 pointer-events-none z-30"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: [0, 1, 0] }}
-        transition={{
-          duration: 0.5,
-          delay: ant.delay + ant.duration * 0.9, // Sync with arrival
-          repeat: Infinity,
-          repeatDelay: ant.duration + 0.5, // Sync with loop
-        }}
-      >
-        <ParticleBurst color={ant.blockColor} />
-      </motion.div>
-    </>
   );
 }
 
