@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
-import { Menu, X } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Menu, X, LogIn } from 'lucide-react';
 import { useScrollHeader } from '@/hooks/useAnimations';
 
 const navItems = [
@@ -10,6 +11,7 @@ const navItems = [
   { name: 'Case Studies', href: '#case-studies' },
   { name: 'Team', href: '#team' },
   { name: 'Contact', href: '#contact' },
+  { name: 'Prescription', href: '#prescription' },
 ];
 
 export function Header() {
@@ -72,7 +74,7 @@ export function Header() {
               <motion.button
                 key={item.name}
                 onClick={() => handleNavClick(item.href)}
-                className="text-gray-300 hover:text-white transition-colors relative group"
+                className="text-gray-300 hover:text-white transition-colors relative group text-sm font-medium"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
@@ -80,12 +82,21 @@ export function Header() {
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-orange-500 to-red-500 transition-all duration-300 group-hover:w-full" />
               </motion.button>
             ))}
+            
+            {/* Desktop Login Button */}
+            <Link
+              to="/login"
+              className="flex items-center gap-2 bg-gradient-to-r from-orange-500 to-red-500 hover:opacity-95 text-white px-4.5 py-2 rounded-xl text-sm font-semibold shadow-md transition-all active:scale-95"
+            >
+              <LogIn className="w-4 h-4" />
+              <span>Login</span>
+            </Link>
           </nav>
 
           {/* Mobile Menu Button */}
           <motion.button
             whileTap={{ scale: 0.9 }}
-            className="lg:hidden p-2 text-white"
+            className="lg:hidden p-2 text-white flex items-center gap-4"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
             {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -114,12 +125,31 @@ export function Header() {
               }}
               transition={{ delay: index * 0.1 }}
               onClick={() => handleNavClick(item.href)}
-              className="block w-full text-left text-gray-300 hover:text-white py-2 transition-colors"
+              className="block w-full text-left text-gray-300 hover:text-white py-2 transition-colors text-sm font-medium"
             >
               {item.name}
             </motion.button>
           ))}
 
+          {/* Mobile Login Button */}
+          <motion.div
+            initial={{ x: -20, opacity: 0 }}
+            animate={{
+              x: mobileMenuOpen ? 0 : -20,
+              opacity: mobileMenuOpen ? 1 : 0,
+            }}
+            transition={{ delay: navItems.length * 0.1 }}
+            className="pt-2"
+          >
+            <Link
+              to="/login"
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center justify-center gap-2 bg-gradient-to-r from-orange-500 to-red-500 text-white w-full py-3 rounded-xl text-sm font-semibold shadow-md"
+            >
+              <LogIn className="w-4 h-4" />
+              <span>Login to Dashboard</span>
+            </Link>
+          </motion.div>
         </nav>
       </motion.div>
     </motion.header>

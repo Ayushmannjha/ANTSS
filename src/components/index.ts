@@ -12,3 +12,5 @@ export { Testimonials } from './Testimonials';
 export { Contact } from './Contact';
 export { Footer } from './Footer';
 export { CustomCursor } from './CustomCursor';
+export { Prescription } from './Prescription';
+export { ProtectedRoute } from './ProtectedRoute';

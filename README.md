@@ -76,3 +76,19 @@ export default defineConfig([
 # testfrontend
 # testfrontend
 # ANTSS
+
+## Prescription module
+
+There's a new Prescription package page added at the `#prescription` section of the site.
+
+- Package: Prescription (only package available on the page)
+- Base price: ₹15,000 (includes 1 doctor)
+- Each additional doctor: +₹5,000 per doctor
+- Optional RMO app: +₹5,000
+
+How to test:
+
+1. Run the dev server: `npm run dev`
+2. Open the app in the browser and use the header link "Prescription" or navigate to `#prescription` on the page.
+3. Adjust number of doctors and toggle RMO to see the live total price. Click "Register for Product" to show a confirmation message.
+

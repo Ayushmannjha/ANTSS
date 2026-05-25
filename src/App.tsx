@@ -1,3 +1,8 @@
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
+import { LoginPage } from './pages/LoginPage';
+import { UserDashboard } from './pages/UserDashboard';
+import { AdminDashboard } from './pages/AdminDashboard';
 import {
   Header,
   Hero,
@@ -9,16 +14,17 @@ import {
   TechStack,
   Approach,
   ServiceDetails,
+  Prescription,
   Testimonials,
   Contact,
   Footer,
   CustomCursor,
+  ProtectedRoute,
 } from './components';
 
-function App() {
+function LandingPage() {
   return (
-    <div className="relative min-h-screen bg-slate-900 text-white overflow-x-hidden lg:cursor-none">
-      <CustomCursor />
+    <>
       <Header />
       <main>
         <Hero />
@@ -30,11 +36,46 @@ function App() {
         <TechStack />
         <Approach />
         <ServiceDetails />
+        <Prescription />
         <Testimonials />
         <Contact />
       </main>
       <Footer />
-    </div>
+    </>
+  );
+}
+
+function App() {
+  return (
+    <AuthProvider>
+      <BrowserRouter>
+        <div className="relative min-h-screen bg-slate-900 text-white overflow-x-hidden lg:cursor-none">
+          <CustomCursor />
+          <Routes>
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/login" element={<LoginPage />} />
+            
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoute allowedRole="USER">
+                  <UserDashboard />
+                </ProtectedRoute>
+              }
+            />
+            
+            <Route
+              path="/admin"
+              element={
+                <ProtectedRoute allowedRole="ADMIN">
+                  <AdminDashboard />
+                </ProtectedRoute>
+              }
+            />
+          </Routes>
+        </div>
+      </BrowserRouter>
+    </AuthProvider>
   );
 }
 
