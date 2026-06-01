@@ -2,6 +2,16 @@ import React, { useState, useRef } from 'react';
 import type { Package } from '@/services/packageService';
 import type { IRegisterRequest } from '@/interfaces/IRegisterRequest';
 import { register } from '@/services/authService';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface RegistrationFormModalProps {
   selectedPkg: Package;
@@ -27,6 +37,7 @@ export function RegistrationFormModal({ selectedPkg, onClose, onSuccess }: Regis
   const [address, setAddress] = useState<string>('');
   const [city, setCity] = useState<string>('');
   const [stateField, setStateField] = useState<string>('');
+  const [entityType, setEntityType] = useState<'CLINIC' | 'HOSPITAL'>('CLINIC');
 
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [submitError, setSubmitError] = useState<string>('');
@@ -71,6 +82,7 @@ export function RegistrationFormModal({ selectedPkg, onClose, onSuccess }: Regis
       country: '',
       packageId: PACKAGE_ID,
       numDoctors: doctors,
+      userType: entityType,
       password: generatedPassword,
       confirmPassword: generatedPassword,
     };
@@ -123,44 +135,56 @@ export function RegistrationFormModal({ selectedPkg, onClose, onSuccess }: Regis
         <div className="space-y-5">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-slate-300 mb-1.5">Full Name</label>
-                <input required className="w-full px-4 py-2.5 rounded-lg bg-slate-800 border border-slate-600 text-white placeholder-slate-400 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-colors" value={name} onChange={(e) => setName(e.target.value)} placeholder="Dr. John Doe" />
+              <div className="space-y-2">
+                <Label htmlFor="fullname" className="text-sm font-medium text-slate-300">Full Name</Label>
+                <Input id="fullname" required className="text-white" value={name} onChange={(e) => setName(e.target.value)} placeholder="Dr. John Doe" />
               </div>
-              <div>
-                <label className="block text-sm font-medium text-slate-300 mb-1.5">Email Address</label>
-                <input required type="email" className="w-full px-4 py-2.5 rounded-lg bg-slate-800 border border-slate-600 text-white placeholder-slate-400 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-colors" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="doctor@example.com" />
+              <div className="space-y-2">
+                <Label htmlFor="email" className="text-sm font-medium text-slate-300">Email Address</Label>
+                <Input id="email" required type="email" className="text-white" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="doctor@example.com" />
               </div>
-              <div>
-                <label className="block text-sm font-medium text-slate-300 mb-1.5">Phone Number</label>
-                <input required type="tel" className="w-full px-4 py-2.5 rounded-lg bg-slate-800 border border-slate-600 text-white placeholder-slate-400 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-colors" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="+91 9876543210" />
+              <div className="space-y-2">
+                <Label htmlFor="phone" className="text-sm font-medium text-slate-300">Phone Number</Label>
+                <Input id="phone" required type="tel" className="text-white" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="+91 9876543210" />
               </div>
             </div>
 
             <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-slate-300 mb-1.5">Hospital / Clinic Name</label>
-                <input required className="w-full px-4 py-2.5 rounded-lg bg-slate-800 border border-slate-600 text-white placeholder-slate-400 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-colors" value={hospital} onChange={(e) => setHospital(e.target.value)} placeholder="City Care Clinic" />
+              <div className="space-y-2">
+                <Label htmlFor="entityType" className="text-sm font-medium text-slate-300">Entity Type</Label>
+                <Select value={entityType} onValueChange={(value) => setEntityType(value as 'CLINIC' | 'HOSPITAL')}>
+                  <SelectTrigger id="entityType" className="w-full text-white">
+                    <SelectValue placeholder="Select type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="CLINIC">Clinic</SelectItem>
+                    <SelectItem value="HOSPITAL">Hospital</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
-              <div>
-                <label className="block text-sm font-medium text-slate-300 mb-1.5">Hospital Phone</label>
-                <input className="w-full px-4 py-2.5 rounded-lg bg-slate-800 border border-slate-600 text-white placeholder-slate-400 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-colors" value={hospitalPhone} onChange={(e) => setHospitalPhone(e.target.value)} placeholder="Optional" />
+              <div className="space-y-2">
+                <Label htmlFor="hospital" className="text-sm font-medium text-slate-300">Hospital / Clinic Name</Label>
+                <Input id="hospital" required className="text-white" value={hospital} onChange={(e) => setHospital(e.target.value)} placeholder="City Care Clinic" />
               </div>
-              <div>
-                <label className="block text-sm font-medium text-slate-300 mb-1.5">Street Address</label>
-                <input required className="w-full px-4 py-2.5 rounded-lg bg-slate-800 border border-slate-600 text-white placeholder-slate-400 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-colors" value={address} onChange={(e) => setAddress(e.target.value)} placeholder="123 Main St" />
+              <div className="space-y-2">
+                <Label htmlFor="hospitalPhone" className="text-sm font-medium text-slate-300">Hospital Phone</Label>
+                <Input id="hospitalPhone" className="text-white" value={hospitalPhone} onChange={(e) => setHospitalPhone(e.target.value)} placeholder="Optional" />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="address" className="text-sm font-medium text-slate-300">Street Address</Label>
+                <Input id="address" required className="text-white" value={address} onChange={(e) => setAddress(e.target.value)} placeholder="123 Main St" />
               </div>
             </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-            <div>
-              <label className="block text-sm font-medium text-slate-300 mb-1.5">City</label>
-              <input required className="w-full px-4 py-2.5 rounded-lg bg-slate-800 border border-slate-600 text-white placeholder-slate-400 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-colors" value={city} onChange={(e) => setCity(e.target.value)} placeholder="Mumbai" />
+            <div className="space-y-2">
+              <Label htmlFor="city" className="text-sm font-medium text-slate-300">City</Label>
+              <Input id="city" required className="text-white" value={city} onChange={(e) => setCity(e.target.value)} placeholder="Mumbai" />
             </div>
-            <div>
-              <label className="block text-sm font-medium text-slate-300 mb-1.5">State</label>
-              <input required className="w-full px-4 py-2.5 rounded-lg bg-slate-800 border border-slate-600 text-white placeholder-slate-400 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-colors" value={stateField} onChange={(e) => setStateField(e.target.value)} placeholder="Maharashtra" />
+            <div className="space-y-2">
+              <Label htmlFor="state" className="text-sm font-medium text-slate-300">State</Label>
+              <Input id="state" required className="text-white" value={stateField} onChange={(e) => setStateField(e.target.value)} placeholder="Maharashtra" />
             </div>
           </div>
 
@@ -168,11 +192,11 @@ export function RegistrationFormModal({ selectedPkg, onClose, onSuccess }: Regis
             <h4 className="text-sm font-semibold text-white mb-4">Package Configuration</h4>
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div className="flex items-center gap-4">
-                <label className="text-sm font-medium text-slate-300">Number of Doctors</label>
+                <Label className="text-sm font-medium text-slate-300">Number of Doctors</Label>
                 <div className="flex items-center bg-slate-800 border border-slate-600 rounded-lg overflow-hidden">
-                  <button type="button" className="px-3 py-2 text-slate-300 hover:bg-slate-700 hover:text-white transition-colors" onClick={() => handleDoctorsChange(doctors - 1)}>-</button>
+                  <Button type="button" variant="ghost" className="px-3 py-2 h-auto text-slate-300 hover:bg-slate-700 hover:text-white transition-colors border-0" onClick={() => handleDoctorsChange(doctors - 1)}>-</Button>
                   <input type="number" min={1} value={doctors} onChange={(e) => handleDoctorsChange(Number(e.target.value))} className="w-12 text-center bg-transparent border-none focus:ring-0 text-white text-sm" />
-                  <button type="button" className="px-3 py-2 text-orange-400 hover:bg-slate-700 hover:text-orange-300 transition-colors" onClick={() => handleDoctorsChange(doctors + 1)}>+</button>
+                  <Button type="button" variant="ghost" className="px-3 py-2 h-auto text-orange-400 hover:bg-slate-700 hover:text-orange-300 transition-colors border-0" onClick={() => handleDoctorsChange(doctors + 1)}>+</Button>
                 </div>
               </div>
 
@@ -205,8 +229,8 @@ export function RegistrationFormModal({ selectedPkg, onClose, onSuccess }: Regis
             </div>
 
             <div className="flex items-center gap-3 w-full sm:w-auto">
-              <button type="button" onClick={handleClose} className="flex-1 sm:flex-none px-6 py-3 rounded-xl font-medium text-slate-300 hover:text-white bg-slate-800 hover:bg-slate-700 transition-colors">Cancel</button>
-              <button type="submit" disabled={isSubmitting} className="flex-1 sm:flex-none flex items-center justify-center gap-2 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white px-8 py-3 rounded-xl font-medium shadow-lg hover:shadow-orange-500/25 transition-all disabled:opacity-70 disabled:cursor-not-allowed">
+              <Button type="button" variant="outline" onClick={handleClose} className="flex-1 sm:flex-none border-slate-700 text-slate-300 hover:text-white bg-slate-800 hover:bg-slate-700">Cancel</Button>
+              <Button type="submit" disabled={isSubmitting} className="flex-1 sm:flex-none flex items-center justify-center gap-2 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white shadow-lg hover:shadow-orange-500/25 transition-all border-0">
                 {isSubmitting ? (
                   <>
                     <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -218,7 +242,7 @@ export function RegistrationFormModal({ selectedPkg, onClose, onSuccess }: Regis
                 ) : (
                   'Confirm & Pay'
                 )}
-              </button>
+              </Button>
             </div>
           </div>
         </div>

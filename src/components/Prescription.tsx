@@ -25,7 +25,8 @@ export function Prescription() {
     setPkgLoading(true);
     fetchPackages(controller.signal)
       .then((data) => {
-        setPackages(data.filter((p) => p.active));
+        // Show all packages returned from backend
+        setPackages(data);
       })
       .catch((err) => {
         if (err.name !== 'AbortError') {
@@ -68,21 +69,40 @@ export function Prescription() {
         )}
 
         {pkgLoading ? (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
             {[1, 2, 3].map((i) => (
               <div key={i} className="bg-slate-900 rounded-2xl h-[450px] animate-pulse border border-slate-700"></div>
             ))}
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch">
-            {packages.map((pkg, index) => (
-              <PackageCard 
-                key={pkg.id} 
-                pkg={pkg} 
-                isPopular={index === 1} 
-                onSelect={handleSelectPackage} 
-              />
-            ))}
+          <div 
+            className={`grid gap-8 items-stretch justify-center mx-auto ${
+              packages.length === 1
+                ? 'grid-cols-1 max-w-md'
+                : packages.length === 2
+                ? 'grid-cols-1 md:grid-cols-2 max-w-3xl'
+                : packages.length === 3
+                ? 'grid-cols-1 md:grid-cols-3 max-w-5xl'
+                : packages.length === 4
+                ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-4 max-w-6xl'
+                : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 max-w-7xl'
+            }`}
+          >
+            {packages.map((pkg, index) => {
+              const isPopular = 
+                packages.length === 3 ? index === 1 :
+                packages.length === 2 ? index === 1 :
+                packages.length === 1 ? true : index === 1;
+
+              return (
+                <PackageCard 
+                  key={pkg.id} 
+                  pkg={pkg} 
+                  isPopular={isPopular} 
+                  onSelect={handleSelectPackage} 
+                />
+              );
+            })}
           </div>
         )}
 

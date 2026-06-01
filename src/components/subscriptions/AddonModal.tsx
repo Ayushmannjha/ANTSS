@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { Loader2 } from 'lucide-react';
 import { requestDoctorAddon } from '../../services/subscriptionService';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
 interface AddonModalProps {
   token: string;
@@ -59,36 +62,40 @@ export default function AddonModal({ token, subscriptionId, onClose, onSuccess }
         )}
 
         <div className="space-y-4">
-          <div>
-            <label className="block text-xs font-semibold text-gray-400 uppercase mb-1">Number of Additional Doctors</label>
-            <input
+          <div className="space-y-2">
+            <Label htmlFor="additional-doctors" className="text-xs font-semibold text-gray-400 uppercase">
+              Number of Additional Doctors
+            </Label>
+            <Input
+              id="additional-doctors"
               type="number"
               min="1"
               value={additionalDoctors}
               onChange={(e) => setAdditionalDoctors(parseInt(e.target.value) || 1)}
-              className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/50"
+              className="w-full text-white"
               required
             />
           </div>
         </div>
 
         <div className="flex justify-end gap-3 mt-6 border-t border-white/5 pt-4">
-          <button
+          <Button
             type="button"
+            variant="ghost"
             onClick={onClose}
-            className="px-4 py-2 text-sm text-gray-400 hover:text-white transition-colors"
+            className="text-gray-400 hover:text-white"
             disabled={loading}
           >
             Cancel
-          </button>
-          <button
+          </Button>
+          <Button
             type="submit"
             disabled={loading}
-            className="flex items-center gap-2 bg-gradient-to-r from-orange-500 to-red-500 text-white px-5 py-2 rounded-lg text-sm font-semibold shadow hover:opacity-95 disabled:opacity-50"
+            className="flex items-center gap-2 bg-gradient-to-r from-orange-500 to-red-500 text-white shadow hover:opacity-95"
           >
             {loading && <Loader2 className="w-4 h-4 animate-spin" />}
             <span>Request Addon</span>
-          </button>
+          </Button>
         </div>
       </form>
     </div>

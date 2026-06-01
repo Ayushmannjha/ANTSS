@@ -3,6 +3,8 @@ import type { ApiResponse } from './authService';
 export interface Hospital {
   id: number;
   hospitalName: string;
+  hospitalCode?: string;
+  email?: string;
   mobileNumber?: string;
   addressLine1?: string;
   city?: string;
@@ -16,6 +18,7 @@ export interface Hospital {
 export interface Clinic {
   id: number;
   clinicName: string;
+  clinicCode?: string;
   email: string;
   mobileNumber?: string;
   addressLine1?: string;
