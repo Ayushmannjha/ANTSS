@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { Loader2 } from 'lucide-react';
-import { type Clinic, addClinic, updateClinic } from '../../services/userService';
+import { type Hospital, addHospital, updateHospital } from '../../services/userService';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
-interface ClinicModalProps {
+interface HospitalModalProps {
   token: string;
-  editingClinic: Clinic | null;
+  editingHospital: Hospital | null;
   onClose: () => void;
-  onSuccess: (clinic: Clinic, isNew: boolean) => void;
+  onSuccess: (hospital: Hospital, isNew: boolean) => void;
 }
 
-export default function ClinicModal({ token, editingClinic, onClose, onSuccess }: ClinicModalProps) {
+export default function HospitalModal({ token, editingHospital, onClose, onSuccess }: HospitalModalProps) {
   const [formName, setFormName] = useState('');
   const [formEmail, setFormEmail] = useState('');
   const [formPhone, setFormPhone] = useState('');
@@ -24,28 +24,28 @@ export default function ClinicModal({ token, editingClinic, onClose, onSuccess }
   const [error, setError] = useState('');
 
   useEffect(() => {
-    if (editingClinic) {
-      setFormName(editingClinic.clinicName);
-      setFormEmail(editingClinic.email || '');
-      setFormPhone(editingClinic.mobileNumber || '');
-      setFormAddress(editingClinic.addressLine1 || '');
-      setFormCity(editingClinic.city || '');
-      setFormState(editingClinic.state || '');
-      setFormPincode(editingClinic.pincode || '');
+    if (editingHospital) {
+      setFormName(editingHospital.hospitalName);
+      setFormEmail(editingHospital.email || '');
+      setFormPhone(editingHospital.mobileNumber || '');
+      setFormAddress(editingHospital.addressLine1 || '');
+      setFormCity(editingHospital.city || '');
+      setFormState(editingHospital.state || '');
+      setFormPincode(editingHospital.pincode || '');
     }
-  }, [editingClinic]);
+  }, [editingHospital]);
 
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formName.trim() || !formEmail.trim() || !formPhone.trim()) {
-      setError('Name, Email, and Mobile Number are required.');
+      setError('Hospital Name, Email, and Phone Number are required.');
       return;
     }
     setError('');
     setActionLoading(true);
 
     const payload = {
-      clinicName: formName,
+      hospitalName: formName,
       email: formEmail,
       mobileNumber: formPhone,
       addressLine1: formAddress,
@@ -55,21 +55,21 @@ export default function ClinicModal({ token, editingClinic, onClose, onSuccess }
     };
 
     try {
-      if (editingClinic) {
-        const res = await updateClinic(token, editingClinic.id, payload);
+      if (editingHospital) {
+        const res = await updateHospital(token, editingHospital.id, payload);
         if (res.success && res.data) {
           onSuccess(res.data, false);
           onClose();
         } else {
-          setError(res.message || 'Failed to update clinic');
+          setError(res.message || 'Failed to update hospital');
         }
       } else {
-        const res = await addClinic(token, payload);
+        const res = await addHospital(token, payload);
         if (res.success && res.data) {
           onSuccess(res.data, true);
           onClose();
         } else {
-          setError(res.message || 'Failed to add clinic');
+          setError(res.message || 'Failed to add hospital');
         }
       }
     } catch (err: any) {
@@ -84,9 +84,9 @@ export default function ClinicModal({ token, editingClinic, onClose, onSuccess }
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
       <form onSubmit={handleFormSubmit} className="relative z-10 bg-slate-900 border border-white/10 p-6 rounded-2xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
         <h3 className="text-xl font-bold mb-1 text-white capitalize">
-          {editingClinic ? 'Edit' : 'Add'} Clinic
+          {editingHospital ? 'Edit' : 'Add'} Hospital
         </h3>
-        <p className="text-xs text-gray-400 mb-5">Provide correct parameters for the clinic.</p>
+        <p className="text-xs text-gray-400 mb-5">Provide correct parameters for the hospital.</p>
 
         {error && (
           <div className="bg-red-500/10 border border-red-500/50 text-red-500 px-4 py-2 rounded mb-4 text-sm">
@@ -96,14 +96,14 @@ export default function ClinicModal({ token, editingClinic, onClose, onSuccess }
 
         <div className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="clinicName" className="text-xs font-semibold text-gray-400 uppercase">Clinic Name *</Label>
+            <Label htmlFor="hospitalName" className="text-xs font-semibold text-gray-400 uppercase">Hospital Name *</Label>
             <Input
-              id="clinicName"
+              id="hospitalName"
               type="text"
               value={formName}
               onChange={(e) => setFormName(e.target.value)}
               className="text-white"
-              placeholder="LifeCare Clinic"
+              placeholder="City General Hospital"
               required
             />
           </div>
@@ -116,13 +116,13 @@ export default function ClinicModal({ token, editingClinic, onClose, onSuccess }
               value={formEmail}
               onChange={(e) => setFormEmail(e.target.value)}
               className="text-white"
-              placeholder="contact@lifecare.com"
+              placeholder="contact@hospital.com"
               required
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="mobileNumber" className="text-xs font-semibold text-gray-400 uppercase">Mobile Number *</Label>
+            <Label htmlFor="mobileNumber" className="text-xs font-semibold text-gray-400 uppercase">Mobile / Phone *</Label>
             <Input
               id="mobileNumber"
               type="text"
@@ -200,7 +200,7 @@ export default function ClinicModal({ token, editingClinic, onClose, onSuccess }
             className="flex items-center gap-2 bg-gradient-to-r from-orange-500 to-red-500 text-white shadow hover:opacity-95"
           >
             {actionLoading && <Loader2 className="w-4 h-4 animate-spin" />}
-            <span>{editingClinic ? 'Save Changes' : 'Create Clinic'}</span>
+            <span>{editingHospital ? 'Save Changes' : 'Create Hospital'}</span>
           </Button>
         </div>
       </form>

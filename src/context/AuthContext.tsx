@@ -44,9 +44,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const logout = useCallback(() => {
+    if (user?.accessToken) {
+      fetch('/api/auth/logout', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${user.accessToken}`,
+          'Content-Type': 'application/json'
+        }
+      }).catch(err => console.error("Backend logout error:", err));
+    }
     localStorage.removeItem(STORAGE_KEY);
     setUser(null);
-  }, []);
+  }, [user]);
 
   return (
     <AuthContext.Provider

@@ -1,6 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { Loader2 } from 'lucide-react';
 import { type Doctor, addDoctor, updateDoctor } from '../../services/userService';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface DoctorModalProps {
   token: string;
@@ -95,124 +105,132 @@ export default function DoctorModal({ token, editingDoctor, onClose, onSuccess }
         )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-xs font-semibold text-gray-400 uppercase mb-1">Doctor Name *</label>
-            <input
+          <div className="space-y-2">
+            <Label htmlFor="doctorName" className="text-xs font-semibold text-gray-400 uppercase">Doctor Name *</Label>
+            <Input
+              id="doctorName"
               type="text"
               value={formName}
               onChange={(e) => setFormName(e.target.value)}
-              className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/50"
+              className="text-white"
               placeholder="Dr. John Doe"
               required
             />
           </div>
 
-          <div>
-            <label className="block text-xs font-semibold text-gray-400 uppercase mb-1">Specialization *</label>
-            <input
+          <div className="space-y-2">
+            <Label htmlFor="specialization" className="text-xs font-semibold text-gray-400 uppercase">Specialization *</Label>
+            <Input
+              id="specialization"
               type="text"
               value={formSpecialization}
               onChange={(e) => setFormSpecialization(e.target.value)}
-              className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/50"
+              className="text-white"
               placeholder="Cardiologist"
               required
             />
           </div>
 
-          <div>
-            <label className="block text-xs font-semibold text-gray-400 uppercase mb-1">Qualification *</label>
-            <input
+          <div className="space-y-2">
+            <Label htmlFor="qualification" className="text-xs font-semibold text-gray-400 uppercase">Qualification *</Label>
+            <Input
+              id="qualification"
               type="text"
               value={formQualification}
               onChange={(e) => setFormQualification(e.target.value)}
-              className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/50"
+              className="text-white"
               placeholder="MBBS, MD"
               required
             />
           </div>
 
-          <div>
-            <label className="block text-xs font-semibold text-gray-400 uppercase mb-1">Experience (Years) *</label>
-            <input
+          <div className="space-y-2">
+            <Label htmlFor="experienceYears" className="text-xs font-semibold text-gray-400 uppercase">Experience (Years) *</Label>
+            <Input
+              id="experienceYears"
               type="number"
               min="0"
               value={formExperience}
               onChange={(e) => setFormExperience(e.target.value === '' ? '' : Number(e.target.value))}
-              className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/50"
+              className="text-white"
               placeholder="5"
               required
             />
           </div>
 
-          <div>
-            <label className="block text-xs font-semibold text-gray-400 uppercase mb-1">Email</label>
-            <input
+          <div className="space-y-2">
+            <Label htmlFor="email" className="text-xs font-semibold text-gray-400 uppercase">Email</Label>
+            <Input
+              id="email"
               type="email"
               value={formEmail}
               onChange={(e) => setFormEmail(e.target.value)}
-              className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/50"
+              className="text-white"
               placeholder="doctor@example.com"
             />
           </div>
 
-          <div>
-            <label className="block text-xs font-semibold text-gray-400 uppercase mb-1">Mobile Number</label>
-            <input
+          <div className="space-y-2">
+            <Label htmlFor="mobileNumber" className="text-xs font-semibold text-gray-400 uppercase">Mobile Number</Label>
+            <Input
+              id="mobileNumber"
               type="text"
               value={formMobile}
               onChange={(e) => setFormMobile(e.target.value)}
-              className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/50"
+              className="text-white"
               placeholder="+91 9876543210"
             />
           </div>
 
-          <div>
-            <label className="block text-xs font-semibold text-gray-400 uppercase mb-1">Registration No *</label>
-            <input
+          <div className="space-y-2">
+            <Label htmlFor="registrationNumber" className="text-xs font-semibold text-gray-400 uppercase">Registration No *</Label>
+            <Input
+              id="registrationNumber"
               type="text"
               value={formRegNo}
               onChange={(e) => setFormRegNo(e.target.value)}
-              className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/50"
+              className="text-white"
               placeholder="MCI-12345"
               required
             />
           </div>
 
           {editingDoctor && (
-            <div>
-              <label className="block text-xs font-semibold text-gray-400 uppercase mb-1">Status *</label>
-              <select
-                value={formStatus}
-                onChange={(e) => setFormStatus(e.target.value)}
-                className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/50"
-                required
-              >
-                <option value="ACTIVE">ACTIVE</option>
-                <option value="INACTIVE">INACTIVE</option>
-                <option value="APPROVED">APPROVED</option>
-                <option value="REJECTED">REJECTED</option>
-              </select>
+            <div className="space-y-2">
+              <Label htmlFor="status" className="text-xs font-semibold text-gray-400 uppercase">Status *</Label>
+              <Select value={formStatus} onValueChange={(value) => setFormStatus(value)}>
+                <SelectTrigger id="status" className="w-full text-white">
+                  <SelectValue placeholder="Select status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="ACTIVE">ACTIVE</SelectItem>
+                  <SelectItem value="INACTIVE">INACTIVE</SelectItem>
+                  <SelectItem value="APPROVED">APPROVED</SelectItem>
+                  <SelectItem value="REJECTED">REJECTED</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           )}
         </div>
 
         <div className="flex justify-end gap-3 mt-6 border-t border-white/5 pt-4">
-          <button
+          <Button
             type="button"
+            variant="ghost"
             onClick={onClose}
-            className="px-4 py-2 text-sm text-gray-400 hover:text-white transition-colors"
+            className="text-gray-400 hover:text-white"
             disabled={actionLoading}
           >
             Cancel
-          </button>
-          <button
+          </Button>
+          <Button
             type="submit"
             disabled={actionLoading}
-            className="flex items-center gap-2 bg-gradient-to-r from-orange-500 to-red-500 text-white px-5 py-2 rounded-lg text-sm font-semibold shadow hover:opacity-95 disabled:opacity-50"
+            className="flex items-center gap-2 bg-gradient-to-r from-orange-500 to-red-500 text-white shadow hover:opacity-95"
           >
             {actionLoading && <Loader2 className="w-4 h-4 animate-spin" />}
             <span>{editingDoctor ? 'Save Changes' : 'Add Doctor'}</span>
-          </button>
+          </Button>
         </div>
       </form>
     </div>

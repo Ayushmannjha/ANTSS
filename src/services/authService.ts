@@ -44,7 +44,7 @@ export async function register(
     fullName: payload.fullName,
     email: payload.email,
     mobileNumber: payload.mobile,            // mobile → mobileNumber
-    userType: 'CLINIC',                       // default for website registrations
+    userType: payload.userType ?? 'CLINIC',   // dynamic selection or default
     entityName: payload.clinicName,           // clinicName → entityName
     addressLine1: payload.address ?? '',      // address → addressLine1
     city: payload.city ?? '',
@@ -135,6 +135,78 @@ export async function loginUser(
     success: true,
     message: body?.message,
     data: body?.data,
+  };
+}
+
+/**
+ * forgotPassword
+ * Sends email to request password reset token.
+ */
+export async function forgotPassword(
+  email: string,
+  options?: { signal?: AbortSignal },
+): Promise<ApiResponse<void>> {
+  const res = await fetch('/api/auth/forgot-password', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email }),
+    signal: options?.signal,
+  });
+
+  let body: any = undefined;
+  try {
+    body = await res.json();
+  } catch (e) {
+    // ignore
+  }
+
+  if (!res.ok) {
+    return {
+      success: false,
+      message: body?.message ?? `Request failed with status ${res.status}`,
+    };
+  }
+
+  return {
+    success: true,
+    message: body?.message ?? 'Password reset link sent to your email.',
+  };
+}
+
+/**
+ * resetPassword
+ * Resets the password using the received token.
+ */
+export async function resetPassword(
+  token: string,
+  newPassword: string,
+  confirmPassword: string,
+  options?: { signal?: AbortSignal },
+): Promise<ApiResponse<void>> {
+  const res = await fetch('/api/auth/reset-password', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ token, newPassword, confirmPassword }),
+    signal: options?.signal,
+  });
+
+  let body: any = undefined;
+  try {
+    body = await res.json();
+  } catch (e) {
+    // ignore
+  }
+
+  if (!res.ok) {
+    return {
+      success: false,
+      message: body?.message ?? `Password reset failed with status ${res.status}`,
+    };
+  }
+
+  return {
+    success: true,
+    message: body?.message ?? 'Password reset successfully.',
   };
 }
 

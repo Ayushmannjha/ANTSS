@@ -3,6 +3,10 @@ import { motion, useInView } from 'framer-motion';
 import { Send, MapPin, Phone, Mail } from 'lucide-react';
 import emailjs from '@emailjs/browser';
 import { fadeInDown, fadeIn, withDelay } from '@/lib/animations';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 
 export function Contact() {
   const ref = useRef(null);
@@ -88,16 +92,17 @@ export function Contact() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={isInView ? { opacity: 1, y: 0 } : {}}
                   transition={{ delay: 0.5 }}
+                  className="space-y-2"
                 >
-                  <label htmlFor="name" className="block text-sm text-gray-400 mb-2">
+                  <Label htmlFor="name" className="text-sm text-gray-400">
                     Your Name
-                  </label>
-                  <input
+                  </Label>
+                  <Input
                     type="text"
                     id="name"
                     name="user_name" // specific name for EmailJS usually
                     required
-                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-colors"
+                    className="text-white"
                     placeholder="John Doe"
                   />
                 </motion.div>
@@ -106,16 +111,17 @@ export function Contact() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={isInView ? { opacity: 1, y: 0 } : {}}
                   transition={{ delay: 0.6 }}
+                  className="space-y-2"
                 >
-                  <label htmlFor="email" className="block text-sm text-gray-400 mb-2">
+                  <Label htmlFor="email" className="text-sm text-gray-400">
                     Your Email
-                  </label>
-                  <input
+                  </Label>
+                  <Input
                     type="email"
                     id="email"
                     name="user_email" // specific name for EmailJS usually
                     required
-                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-colors"
+                    className="text-white"
                     placeholder="john@example.com"
                   />
                 </motion.div>
@@ -125,16 +131,17 @@ export function Contact() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={isInView ? { opacity: 1, y: 0 } : {}}
                 transition={{ delay: 0.7 }}
+                className="space-y-2"
               >
-                <label htmlFor="subject" className="block text-sm text-gray-400 mb-2">
+                <Label htmlFor="subject" className="text-sm text-gray-400">
                   Subject
-                </label>
-                <input
+                </Label>
+                <Input
                   type="text"
                   id="subject"
                   name="subject"
                   required
-                  className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-colors"
+                  className="text-white"
                   placeholder="Project Inquiry"
                 />
               </motion.div>
@@ -143,39 +150,40 @@ export function Contact() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={isInView ? { opacity: 1, y: 0 } : {}}
                 transition={{ delay: 0.8 }}
+                className="space-y-2"
               >
-                <label htmlFor="message" className="block text-sm text-gray-400 mb-2">
+                <Label htmlFor="message" className="text-sm text-gray-400">
                   Message
-                </label>
-                <textarea
+                </Label>
+                <Textarea
                   id="message"
                   name="message"
                   required
-                  rows={5}
-                  className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-colors resize-none"
+                  className="text-white resize-none h-32"
                   placeholder="Tell us about your project..."
                 />
               </motion.div>
 
-              <motion.button
-                type="submit"
-                disabled={isSubmitting}
-                whileHover={{ scale: 0.95 }}
-                whileTap={{ scale: 0.9 }}
+              <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={isInView ? { opacity: 1, y: 0 } : {}}
                 transition={{ delay: 0.9 }}
-                className="w-full px-8 py-4 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-xl font-medium flex items-center justify-center gap-2 hover:shadow-lg hover:shadow-orange-500/25 transition-shadow disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {isSubmitting ? (
-                  <span>Sending...</span>
-                ) : (
-                  <>
-                    Send Message
-                    <Send className="w-5 h-5" />
-                  </>
-                )}
-              </motion.button>
+                <Button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full py-6 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-xl font-medium flex items-center justify-center gap-2 hover:shadow-lg hover:shadow-orange-500/25 transition-shadow border-0"
+                >
+                  {isSubmitting ? (
+                    <span>Sending...</span>
+                  ) : (
+                    <>
+                      Send Message
+                      <Send className="w-5 h-5" />
+                    </>
+                  )}
+                </Button>
+              </motion.div>
 
               {submitStatus === 'success' && (
                 <p className="text-green-500 text-center text-sm mt-2">Message sent successfully!</p>

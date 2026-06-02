@@ -12,6 +12,8 @@ export interface IRegisterRequest {
   packageId: number;
   numDoctors: number;
 
+  userType?: 'CLINIC' | 'HOSPITAL';
+
   password: string;
   confirmPassword: string;
 }
