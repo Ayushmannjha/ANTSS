@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Building2, Plus, Edit2, MapPin, Phone, Mail } from 'lucide-react';
 import { type Hospital } from '../../services/userService';
 import HospitalModal from './HospitalModal';
+import UnderProcessModal from '../common/UnderProcessModal';
 
 interface HospitalTabProps {
   hospitals: Hospital[];
@@ -23,9 +24,11 @@ export default function HospitalTab({ hospitals, token, onHospitalsUpdate }: Hos
   const [showModal, setShowModal] = useState(false);
   const [editingHospital, setEditingHospital] = useState<Hospital | null>(null);
 
+  const [showUnderProcess, setShowUnderProcess] = useState(false);
+
   const openAddModal = () => {
-    setEditingHospital(null);
-    setShowModal(true);
+    // Feature is planned for future scope; show informational modal instead
+    setShowUnderProcess(true);
   };
 
   const openEditModal = (hospital: Hospital) => {
@@ -104,6 +107,8 @@ export default function HospitalTab({ hospitals, token, onHospitalsUpdate }: Hos
           onSuccess={handleSaveSuccess}
         />
       )}
+
+      <UnderProcessModal open={showUnderProcess} onClose={() => setShowUnderProcess(false)} />
     </div>
   );
 }

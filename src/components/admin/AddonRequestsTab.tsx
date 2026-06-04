@@ -65,14 +65,17 @@ export function AddonRequestsTab({ addons, onApproveAddon, onRejectAddon, action
               {/* Top colored accent indicator */}
               <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-orange-500 via-orange-600 to-red-600" />
 
-              <div>
+                <div>
                 {/* Header info */}
                 <div className="flex justify-between items-start mb-4">
                   <div>
                     <h4 className="font-semibold text-base text-white group-hover:text-orange-400 transition-colors">
                       {addon.entityName || 'Subscription Addon'}
                     </h4>
-                    <span className="text-xs text-gray-400 block mt-1">{addon.userEmail || 'Subscription owner'}</span>
+                    <div className="text-xs text-gray-400 mt-1">
+                      <div>{addon.username ? `${addon.username}` : (addon.userEmail || 'Subscription owner')}</div>
+                      {addon.entityType && <div className="uppercase text-[10px] mt-1 text-gray-500">Type: {addon.entityType}</div>}
+                    </div>
                   </div>
                   <span className="text-[10px] uppercase font-bold tracking-wider px-2.5 py-1 rounded bg-orange-500/10 text-orange-400 border border-orange-500/20">
                     +{addon.additionalDoctors} Doctors
@@ -102,6 +105,16 @@ export function AddonRequestsTab({ addons, onApproveAddon, onRejectAddon, action
                       </span>
                     </span>
                   </div>
+                  {/* Additional address/state/city info from backend */}
+                  {(addon.state || addon.city || addon.address) && (
+                    <div className="mt-2 text-xs text-gray-400 border-t border-white/5 pt-2">
+                      {addon.address && <div className="truncate">{addon.address}</div>}
+                      <div className="flex gap-2 mt-1">
+                        {addon.city && <div className="uppercase text-[11px] text-gray-500">{addon.city}</div>}
+                        {addon.state && <div className="uppercase text-[11px] text-gray-500">{addon.state}</div>}
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
 

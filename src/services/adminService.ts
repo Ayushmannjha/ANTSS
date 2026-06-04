@@ -34,6 +34,12 @@ export interface DoctorAddonResponse {
   yearlyPricePerDoctor?: number;
   remainingMonths?: number;
   prorataAmount?: number;
+  // Additional fields returned by backend for pending addon requests
+  username?: string;
+  entityType?: string;
+  state?: string;
+  city?: string;
+  address?: string;
 }
 
 export interface AdminStats {
@@ -48,6 +54,47 @@ function getHeaders(token: string) {
   return {
     'Content-Type': 'application/json',
     'Authorization': `Bearer ${token}`,
+  };
+}
+
+// API base — use Vite environment variable VITE_API_BASE if provided, fallback to '/api'
+const API_BASE = (import.meta.env?.VITE_API_BASE as string) ?? '/api';
+
+/**
+ * getAllUsers
+ * GET /api/user/subscriptions/get-all-users
+ * Returns a list of all users (admin-only endpoint)
+ */
+export async function getAllUsers(token: string): Promise<ApiResponse<AdminUserResponse[]>> {
+  const res = await fetch(`${API_BASE}/user/subscriptions/get-all-users`, {
+    headers: getHeaders(token),
+  });
+  const body = await res.json().catch(() => ({}));
+  const raw = body.data || (Array.isArray(body) ? body : []);
+  // backend returns user objects with `userId` and subscription-related fields —
+  // map them to AdminUserResponse expected by the UI
+  const mapped: AdminUserResponse[] = (Array.isArray(raw) ? raw : []).map((it: any) => ({
+    id: it.userId || it.id,
+    fullName: it.fullName || it.name || '',
+    email: it.email || '',
+    mobileNumber: it.mobileNumber || it.mobile || '',
+    // best-effort mapping for userType/entity fields
+    userType: (it.userType as any) || 'DOCTOR',
+    entityName: it.entityName || it.packageName || undefined,
+    addressLine1: it.addressLine1,
+    city: it.city,
+    state: it.state,
+    pincode: it.pincode,
+    allowedDoctors: typeof it.allowedDoctors === 'number' ? it.allowedDoctors : (it.allowedDoctorLimit ?? 0),
+    // derive status from subscriptionStatus where possible
+    status: it.subscriptionStatus === 'ACTIVE' ? 'APPROVED' : (it.subscriptionStatus === 'EXPIRED' ? 'EXPIRED' : (it.subscriptionStatus ? 'INACTIVE' : 'INACTIVE')),
+    active: !!(it.subscriptionStatus === 'ACTIVE')
+  }));
+
+  return {
+    success: res.ok,
+    message: body.message,
+    data: mapped,
   };
 }
 

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Stethoscope, Plus, Edit2, MapPin, Phone, Mail } from 'lucide-react';
 import { type Clinic } from '../../services/userService';
 import ClinicModal from './ClinicModal';
+import UnderProcessModal from '../common/UnderProcessModal';
 
 interface ClinicTabProps {
   clinics: Clinic[];
@@ -23,9 +24,11 @@ export default function ClinicTab({ clinics, token, onClinicsUpdate }: ClinicTab
   const [showModal, setShowModal] = useState(false);
   const [editingClinic, setEditingClinic] = useState<Clinic | null>(null);
 
+  const [showUnderProcess, setShowUnderProcess] = useState(false);
+
   const openAddModal = () => {
-    setEditingClinic(null);
-    setShowModal(true);
+    // Feature is planned for future scope; show informational modal instead
+    setShowUnderProcess(true);
   };
 
   const openEditModal = (clinic: Clinic) => {
@@ -104,6 +107,8 @@ export default function ClinicTab({ clinics, token, onClinicsUpdate }: ClinicTab
           onSuccess={handleSaveSuccess}
         />
       )}
+
+      <UnderProcessModal open={showUnderProcess} onClose={() => setShowUnderProcess(false)} />
     </div>
   );
 }

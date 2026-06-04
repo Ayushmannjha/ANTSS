@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { fetchPackages, type Package } from '../services/packageService';
 import {
-  getUsers,
+  getAllUsers,
   approveUser,
   rejectUser,
   modifyUserPackage,
@@ -68,8 +68,9 @@ export function AdminDashboard() {
     setLoading(true);
     setErrorMessage(null);
     try {
-      const [uRes, pList, aRes, hRes, cRes, sRes] = await Promise.all([
-        getUsers(token),
+    const [uRes, pList, aRes, hRes, cRes, sRes] = await Promise.all([
+      // fetch full user list from subscriptions controller
+      getAllUsers(token),
         fetchPackages(),
         getPendingAddons(token),
         getAdminHospitals(token),
@@ -204,9 +205,9 @@ export function AdminDashboard() {
       const res = await approveAddon(token, addonId);
       if (res.success) {
         setAddonsList(prev => prev.filter(addon => addon.id !== addonId));
-        // Reload users list to show updated allowedDoctor counts
-        const uRes = await getUsers(token);
-        if (uRes.success && uRes.data) setUsersList(uRes.data);
+  // Reload users list to show updated allowedDoctor counts
+  const uRes = await getAllUsers(token);
+  if (uRes.success && uRes.data) setUsersList(uRes.data);
         alert('Doctor license addon successfully approved and applied!');
       } else {
         alert(res.message || 'Addon approval failed.');
@@ -459,6 +460,7 @@ export function AdminDashboard() {
             <UserManagementTab
               users={usersList}
               packages={packagesList}
+              token={token}
               onBlock={handleBlockUser}
               onUnblock={handleUnblockUser}
               onModifyPackage={handleModifyUserPackage}

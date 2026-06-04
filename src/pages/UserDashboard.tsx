@@ -244,7 +244,11 @@ export function UserDashboard() {
           )}
 
           {activeTab === 'subscription' && (
-            <SubscriptionTab token={token} />
+            <SubscriptionTab
+              token={token}
+              hospitals={hospitals}
+              clinics={clinics}
+            />
           )}
         </div>
       </main>

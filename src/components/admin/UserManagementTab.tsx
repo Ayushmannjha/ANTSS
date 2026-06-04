@@ -2,6 +2,8 @@ import { useState } from 'react';
 import type { AdminUserResponse } from '../../services/adminService';
 import type { Package } from '../../services/packageService';
 import { Search, ShieldCheck, Edit, Calendar, Ban, CheckCircle, Mail, Phone, Building } from 'lucide-react';
+import SubscriptionSummaryModal from '../subscriptions/SubscriptionSummaryModal';
+import { isSubscriptionValid, getRemainingDoctorSlots } from '../../services/subscriptionService';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -16,6 +18,7 @@ import {
 interface UserManagementTabProps {
   users: AdminUserResponse[];
   packages: Package[];
+  token: string;
   onBlock: (id: string) => Promise<void>;
   onUnblock: (id: string) => Promise<void>;
   onModifyPackage: (id: string, packageId: number) => Promise<void>;
@@ -26,6 +29,7 @@ interface UserManagementTabProps {
 export function UserManagementTab({
   users,
   packages,
+  token,
   onBlock,
   onUnblock,
   onModifyPackage,
@@ -38,6 +42,10 @@ export function UserManagementTab({
   const [selectedUser, setSelectedUser] = useState<AdminUserResponse | null>(null);
   const [showPkgModal, setShowPkgModal] = useState(false);
   const [showExtendModal, setShowExtendModal] = useState(false);
+  const [showSummaryFor, setShowSummaryFor] = useState<string | null>(null);
+  const [checkingUserId, setCheckingUserId] = useState<string | null>(null);
+  const [userValidityMap, setUserValidityMap] = useState<Record<string, boolean | null>>({});
+  const [userRemainingSlotsMap, setUserRemainingSlotsMap] = useState<Record<string, number | null>>({});
 
   // Form states
   const [selectedPkgId, setSelectedPkgId] = useState<number>(0);
@@ -62,6 +70,14 @@ export function UserManagementTab({
     setSelectedUser(user);
     setExtendDays(30);
     setShowExtendModal(true);
+  };
+
+  const openSummary = (userId: string) => {
+    // debug: log so we can see click activity in browser console
+    // this helps diagnose when the modal doesn't open
+    // eslint-disable-next-line no-console
+    console.log('[Admin] openSummary clicked for', userId);
+    setShowSummaryFor(userId);
   };
 
   const handlePkgSubmit = async (e: React.FormEvent) => {
@@ -151,6 +167,16 @@ export function UserManagementTab({
                           <Ban className="w-3.5 h-3.5" /> Blocked
                         </span>
                       )}
+                      {/* Validity check result (admin) */}
+                      {typeof userValidityMap[u.id] !== 'undefined' && (
+                        <div className="mt-2 text-xs">
+                          {userValidityMap[u.id] ? (
+                            <span className="inline-flex items-center gap-1 text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded text-xs font-medium">Valid</span>
+                          ) : (
+                            <span className="inline-flex items-center gap-1 text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded text-xs font-medium">Invalid</span>
+                          )}
+                        </div>
+                      )}
                       {u.status === 'EXPIRED' && (
                         <span className="inline-flex items-center gap-1 text-amber-400 bg-amber-500/10 px-2.5 py-0.5 rounded-full text-xs font-medium border border-amber-500/10">
                           <Calendar className="w-3.5 h-3.5" /> Expired
@@ -164,6 +190,9 @@ export function UserManagementTab({
                     </td>
                     <td className="p-4 font-semibold text-white">
                       {u.allowedDoctors ?? 0} Limit
+                      {userRemainingSlotsMap[u.id] != null && (
+                        <div className="text-xs text-gray-400 mt-1">Slots: {userRemainingSlotsMap[u.id]}</div>
+                      )}
                     </td>
                     <td className="p-4">
                       <div className="flex items-center justify-center gap-2">
@@ -211,6 +240,49 @@ export function UserManagementTab({
                             </button>
                           )
                         )}
+                      </div>
+                      <div className="mt-2 flex items-center justify-center gap-2">
+                        <button
+                          onClick={() => openSummary(u.id)}
+                          className="px-2.5 py-1.5 rounded-lg bg-slate-800 text-gray-300 hover:text-white hover:bg-slate-700 transition-all text-xs font-medium"
+                        >
+                          View Summary
+                        </button>
+
+                        <button
+                          onClick={async () => {
+                            setCheckingUserId(u.id);
+                            try {
+                              const resp = await isSubscriptionValid(token, u.id);
+                              setUserValidityMap(prev => ({ ...prev, [u.id]: resp.success ? !!resp.data : null }));
+                              if (!resp.success) alert(resp.message || 'Failed to check validity');
+                            } catch (err) {
+                              console.error(err);
+                              alert('Error checking validity');
+                            } finally {
+                              setCheckingUserId(null);
+                            }
+                          }}
+                          className="px-2.5 py-1.5 rounded-lg bg-slate-800 text-gray-300 hover:text-white hover:bg-slate-700 transition-all text-xs font-medium"
+                        >
+                          {checkingUserId === u.id ? 'Checking...' : 'Check Valid'}
+                        </button>
+
+                        <button
+                          onClick={async () => {
+                            try {
+                              const resp = await getRemainingDoctorSlots(token, u.id);
+                              setUserRemainingSlotsMap(prev => ({ ...prev, [u.id]: resp.success && typeof resp.data === 'number' ? resp.data : null }));
+                              if (!resp.success) alert(resp.message || 'Failed to fetch slots');
+                            } catch (err) {
+                              console.error(err);
+                              alert('Error fetching slots');
+                            }
+                          }}
+                          className="px-2.5 py-1.5 rounded-lg bg-slate-800 text-gray-300 hover:text-white hover:bg-slate-700 transition-all text-xs font-medium"
+                        >
+                          Slots
+                        </button>
                       </div>
                     </td>
                   </tr>
@@ -316,6 +388,16 @@ export function UserManagementTab({
             </div>
           </form>
         </div>
+      )}
+
+      {/* Admin view: subscription summary modal for a specific user */}
+      {showSummaryFor && (
+        <SubscriptionSummaryModal
+          token={token}
+          userId={showSummaryFor}
+          open={!!showSummaryFor}
+          onClose={() => setShowSummaryFor(null)}
+        />
       )}
     </div>
   );

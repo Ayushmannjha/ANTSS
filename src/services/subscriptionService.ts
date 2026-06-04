@@ -31,6 +31,11 @@ export interface DoctorAddon {
 export interface AddDoctorAddonRequest {
   userSubscriptionId: string;
   additionalDoctors: number;
+  facilityType?: 'HOSPITAL' | 'CLINIC';
+  facilityId?: number;
+  entityId?: number;
+  hospitalId?: number;
+  clinicId?: number;
 }
 
 function getHeaders(token: string) {
@@ -40,8 +45,11 @@ function getHeaders(token: string) {
   };
 }
 
+// API base — use Vite environment variable VITE_API_BASE if provided, fallback to '/api'
+const API_BASE = (import.meta.env?.VITE_API_BASE as string) ?? '/api';
+
 export async function getActiveSubscriptions(token: string): Promise<ApiResponse<Subscription[]>> {
-  const res = await fetch('/api/subscriptions/active', {
+  const res = await fetch(`${API_BASE}/subscriptions/active`, {
     headers: getHeaders(token),
   });
   const body = await res.json().catch(() => ({}));
@@ -53,7 +61,7 @@ export async function getActiveSubscriptions(token: string): Promise<ApiResponse
 }
 
 export async function getAddonRequests(token: string): Promise<ApiResponse<DoctorAddon[]>> {
-  const res = await fetch('/api/subscriptions/addons', {
+  const res = await fetch(`${API_BASE}/subscriptions/addons`, {
     headers: getHeaders(token),
   });
   const body = await res.json().catch(() => ({}));
@@ -64,16 +72,96 @@ export async function getAddonRequests(token: string): Promise<ApiResponse<Docto
   };
 }
 
-export async function requestDoctorAddon(token: string, payload: AddDoctorAddonRequest): Promise<ApiResponse<DoctorAddon>> {
-  const res = await fetch('/api/subscriptions/addons', {
+export async function requestDoctorAddon(
+  token: string,
+  payload: AddDoctorAddonRequest
+): Promise<ApiResponse<DoctorAddon>> {
+
+  const url = `${API_BASE}/subscriptions/addons`;
+
+  console.log("=== REQUEST ===");
+  console.log("URL:", url);
+  console.log("Method:", "POST");
+  console.log("Headers:", getHeaders(token));
+  console.log("Payload:", payload);
+  console.log("Payload JSON:", JSON.stringify(payload));
+
+  const res = await fetch(url, {
     method: 'POST',
     headers: getHeaders(token),
     body: JSON.stringify(payload),
+  });
+
+  console.log("=== RESPONSE ===");
+  console.log("Status:", res.status);
+  console.log("Status Text:", res.statusText);
+  console.log("OK:", res.ok);
+
+  const body = await res.json().catch(() => ({}));
+
+  console.log("Response Body:", body);
+
+  const response = {
+    success: res.ok,
+    message: body.message,
+    data: body.data || body,
+  };
+
+  console.log("Parsed Response:", response);
+
+  return response;
+}
+
+// --- New: user subscription summary endpoints ---
+import type { IUserSubscriptionSummary } from '../interfaces/IUserSubscriptionSummary';
+
+/**
+ * getSubscriptionSummary
+ * GET /api/user/subscriptions/{userId}/summary
+ */
+export async function getSubscriptionSummary(
+  token: string,
+  userId: string,
+): Promise<ApiResponse<IUserSubscriptionSummary>> {
+  const res = await fetch(`${API_BASE}/user/subscriptions/${userId}/summary`, {
+    headers: getHeaders(token),
   });
   const body = await res.json().catch(() => ({}));
   return {
     success: res.ok,
     message: body.message,
     data: body.data || body,
+  };
+}
+
+/**
+ * isSubscriptionValid
+ * GET /api/user/subscriptions/{userId}/valid
+ */
+export async function isSubscriptionValid(token: string, userId: string): Promise<ApiResponse<boolean>> {
+  const res = await fetch(`${API_BASE}/user/subscriptions/${userId}/valid`, {
+    headers: getHeaders(token),
+  });
+  const body = await res.json().catch(() => ({}));
+  return {
+    success: res.ok,
+    message: body.message,
+    data: typeof body.data !== 'undefined' ? body.data : (body || false),
+  };
+}
+
+/**
+ * getRemainingDoctorSlots
+ * GET /api/user/subscriptions/{userId}/doctor-slots
+ */
+export async function getRemainingDoctorSlots(token: string, userId: string): Promise<ApiResponse<number>> {
+  const res = await fetch(`${API_BASE}/user/subscriptions/${userId}/doctor-slots`, {
+    headers: getHeaders(token),
+  });
+  const body = await res.json().catch(() => ({}));
+  return {
+    success: res.ok,
+    message: body.message,
+    data: typeof body.data !== 'undefined' ? body.data : (typeof body === 'number' ? body : undefined),
   };
 }

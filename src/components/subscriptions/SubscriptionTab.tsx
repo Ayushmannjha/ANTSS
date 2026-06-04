@@ -6,10 +6,13 @@ import {
   type Subscription, 
   type DoctorAddon 
 } from '../../services/subscriptionService';
+import type { Clinic, Hospital } from '../../services/userService';
 import AddonModal from './AddonModal';
 
 interface SubscriptionTabProps {
   token: string;
+  hospitals: Hospital[];
+  clinics: Clinic[];
 }
 
 const getPaymentStatusBadge = (status: string) => {
@@ -24,7 +27,7 @@ const getApprovalStatusBadge = (status: string) => {
   return <span className="text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded text-xs font-medium uppercase">{status}</span>;
 };
 
-export default function SubscriptionTab({ token }: SubscriptionTabProps) {
+export default function SubscriptionTab({ token, hospitals, clinics }: SubscriptionTabProps) {
   const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
   const [addons, setAddons] = useState<DoctorAddon[]>([]);
   const [loading, setLoading] = useState(true);
@@ -108,12 +111,16 @@ export default function SubscriptionTab({ token }: SubscriptionTabProps) {
                 </div>
 
                 <div className="mt-6 pt-4 border-t border-white/5">
-                  <button
-                    onClick={() => setSelectedSubId(sub.id)}
-                    className="w-full flex items-center justify-center gap-2 bg-white/5 hover:bg-white/10 text-white px-4 py-2 rounded-lg text-sm transition-all border border-white/10"
-                  >
-                    <Plus className="w-4 h-4" /> Request Doctor Addon
-                  </button>
+                  <div className="grid grid-cols-2 gap-3">
+                    <button
+                      onClick={() => setSelectedSubId(sub.id)}
+                      className="w-full flex items-center justify-center gap-2 bg-white/5 hover:bg-white/10 text-white px-4 py-2 rounded-lg text-sm transition-all border border-white/10"
+                    >
+                      <Plus className="w-4 h-4" /> Request Doctor Addon
+                    </button>
+
+                    {/* admin-only summary removed from user view */}
+                  </div>
                 </div>
               </div>
             ))}
@@ -160,12 +167,16 @@ export default function SubscriptionTab({ token }: SubscriptionTabProps) {
         <AddonModal
           token={token}
           subscriptionId={selectedSubId}
+          hospitals={hospitals}
+          clinics={clinics}
           onClose={() => setSelectedSubId(null)}
           onSuccess={() => {
             fetchData();
           }}
         />
       )}
+
+      {/* Summary modal is admin-only and available in Manage Accounts */}
     </div>
   );
 }

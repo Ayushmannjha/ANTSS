@@ -2,6 +2,7 @@ import type { ApiResponse } from './authService';
 
 export interface Hospital {
   id: number;
+  userId?: string;
   hospitalName: string;
   hospitalCode?: string;
   email?: string;
@@ -17,6 +18,7 @@ export interface Hospital {
 
 export interface Clinic {
   id: number;
+  userId?: string;
   clinicName: string;
   clinicCode?: string;
   email: string;
