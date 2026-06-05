@@ -2,10 +2,6 @@
   "cleanUrls": true,
   "rewrites": [
     {
-      "source": "/api/:path*",
-      "destination": "https://api.antss.in/api/:path*"
-    },
-    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
