@@ -14,7 +14,9 @@
  *   fetch(`${API_BASE}/auth/login`, { ... });
  */
 
-const baseUrl = (import.meta.env.VITE_API_URL as string | undefined) ?? '';
+const baseUrl =
+  (import.meta.env.VITE_API_URL as string | undefined) ??
+  (import.meta.env.DEV ? 'http://localhost:2030' : '');
 
 /**
  * API_BASE — resolves to the full API prefix.

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import type { AdminUserResponse } from '../../services/adminService';
 import type { Package } from '../../services/packageService';
-import { Search, ShieldCheck, Edit, Calendar, Ban, CheckCircle, Mail, Phone, Building } from 'lucide-react';
+import { Search, ShieldCheck, Edit, Calendar, Ban, CheckCircle, Mail, Phone, Building, CreditCard } from 'lucide-react';
 import SubscriptionSummaryModal from '../subscriptions/SubscriptionSummaryModal';
 import { isSubscriptionValid, getRemainingDoctorSlots } from '../../services/subscriptionService';
 import { Button } from '@/components/ui/button';
@@ -57,7 +57,8 @@ export function UserManagementTab({
   const filteredUsers = registeredUsers.filter(user =>
     user.fullName.toLowerCase().includes(searchQuery.toLowerCase()) ||
     user.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    (user.entityName || '').toLowerCase().includes(searchQuery.toLowerCase())
+    (user.entityName || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+    (user.packageName || '').toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const openPkgModal = (user: AdminUserResponse) => {
@@ -125,8 +126,8 @@ export function UserManagementTab({
               <tr className="border-b border-white/5 bg-slate-950/60 text-xs font-semibold uppercase text-gray-400">
                 <th className="p-4">Name / Contacts</th>
                 <th className="p-4">Entity Type</th>
-                <th className="p-4">Subscription Status</th>
-                <th className="p-4">Doctors Limit</th>
+                <th className="p-4">Subscription</th>
+                <th className="p-4">Quota</th>
                 <th className="p-4 text-center">Actions</th>
               </tr>
             </thead>
@@ -157,15 +158,36 @@ export function UserManagementTab({
                       </span>
                     </td>
                     <td className="p-4">
-                      {u.status === 'APPROVED' && (
-                        <span className="inline-flex items-center gap-1 text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded-full text-xs font-medium border border-emerald-500/10">
-                          <ShieldCheck className="w-3.5 h-3.5" /> Active
-                        </span>
-                      )}
-                      {u.status === 'INACTIVE' && (
-                        <span className="inline-flex items-center gap-1 text-red-400 bg-red-500/10 px-2.5 py-0.5 rounded-full text-xs font-medium border border-red-500/10">
-                          <Ban className="w-3.5 h-3.5" /> Blocked
-                        </span>
+                      <div className="font-medium text-white">{u.packageName || 'No package'}</div>
+                      <div className="mt-2 flex flex-wrap gap-1.5">
+                        {u.status === 'APPROVED' && (
+                          <span className="inline-flex items-center gap-1 text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded-full text-xs font-medium border border-emerald-500/10">
+                            <ShieldCheck className="w-3.5 h-3.5" /> {u.subscriptionStatus || 'ACTIVE'}
+                          </span>
+                        )}
+                        {u.status === 'INACTIVE' && (
+                          <span className="inline-flex items-center gap-1 text-red-400 bg-red-500/10 px-2.5 py-0.5 rounded-full text-xs font-medium border border-red-500/10">
+                            <Ban className="w-3.5 h-3.5" /> {u.subscriptionStatus || 'Inactive'}
+                          </span>
+                        )}
+                        {u.status === 'EXPIRED' && (
+                          <span className="inline-flex items-center gap-1 text-amber-400 bg-amber-500/10 px-2.5 py-0.5 rounded-full text-xs font-medium border border-amber-500/10">
+                            <Calendar className="w-3.5 h-3.5" /> Expired
+                          </span>
+                        )}
+                        {u.paymentStatus && (
+                          <span className="inline-flex items-center gap-1 text-sky-300 bg-sky-500/10 px-2.5 py-0.5 rounded-full text-xs font-medium border border-sky-500/10">
+                            <CreditCard className="w-3.5 h-3.5" /> {u.paymentStatus}
+                          </span>
+                        )}
+                      </div>
+                      {(u.subscriptionStartDate || u.subscriptionEndDate) && (
+                        <div className="mt-2 text-xs text-gray-400">
+                          {u.subscriptionStartDate || '-'} to {u.subscriptionEndDate || '-'}
+                          {typeof u.daysRemaining === 'number' && (
+                            <span className="ml-2 text-gray-500">({u.daysRemaining} days)</span>
+                          )}
+                        </div>
                       )}
                       {/* Validity check result (admin) */}
                       {typeof userValidityMap[u.id] !== 'undefined' && (
@@ -177,11 +199,6 @@ export function UserManagementTab({
                           )}
                         </div>
                       )}
-                      {u.status === 'EXPIRED' && (
-                        <span className="inline-flex items-center gap-1 text-amber-400 bg-amber-500/10 px-2.5 py-0.5 rounded-full text-xs font-medium border border-amber-500/10">
-                          <Calendar className="w-3.5 h-3.5" /> Expired
-                        </span>
-                      )}
                       {u.status === 'REJECTED' && (
                         <span className="inline-flex items-center gap-1 text-gray-400 bg-gray-500/10 px-2.5 py-0.5 rounded-full text-xs font-medium border border-white/5">
                           Rejected
@@ -189,9 +206,13 @@ export function UserManagementTab({
                       )}
                     </td>
                     <td className="p-4 font-semibold text-white">
-                      {u.allowedDoctors ?? 0} Limit
+                      <div>{u.usedDoctors ?? 0}/{u.allowedDoctors ?? 0} doctors</div>
+                      <div className="text-xs text-gray-400 mt-1">{u.availableDoctorSlots ?? 0} slots available</div>
+                      <div className="text-xs text-gray-500 mt-1">
+                        Hospitals {u.allowedHospitals ?? 0} / Clinics {u.allowedClinics ?? 0}
+                      </div>
                       {userRemainingSlotsMap[u.id] != null && (
-                        <div className="text-xs text-gray-400 mt-1">Slots: {userRemainingSlotsMap[u.id]}</div>
+                        <div className="text-xs text-gray-400 mt-1">Live slots: {userRemainingSlotsMap[u.id]}</div>
                       )}
                     </td>
                     <td className="p-4">

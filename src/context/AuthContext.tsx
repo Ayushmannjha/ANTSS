@@ -25,12 +25,23 @@ interface AuthContextValue {
 const AuthContext = createContext<AuthContextValue | null>(null);
 
 const STORAGE_KEY = 'antss_auth';
+const OWNER_USER_TYPES = ['HOSPITAL', 'CLINIC'];
+
+function canUseThisPortal(user: AuthUser): boolean {
+  return user.role === 'ROLE_ADMIN' ||
+    (user.role === 'ROLE_USER' && OWNER_USER_TYPES.includes(String(user.userType).toUpperCase()));
+}
 
 function loadFromStorage(): AuthUser | null {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return null;
-    return JSON.parse(raw) as AuthUser;
+    const user = JSON.parse(raw) as AuthUser;
+    if (!canUseThisPortal(user)) {
+      localStorage.removeItem(STORAGE_KEY);
+      return null;
+    }
+    return user;
   } catch {
     return null;
   }
@@ -40,6 +51,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(loadFromStorage);
 
   const login = useCallback((authUser: AuthUser) => {
+    if (!canUseThisPortal(authUser)) {
+      localStorage.removeItem(STORAGE_KEY);
+      setUser(null);
+      return;
+    }
     localStorage.setItem(STORAGE_KEY, JSON.stringify(authUser));
     setUser(authUser);
   }, []);
