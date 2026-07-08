@@ -99,6 +99,12 @@ export type LoginResponse = {
   };
 };
 
+export function canUseOwnerAdminFrontend(user?: LoginResponse['user'] | null): boolean {
+  if (!user) return false;
+  if (user.role === 'ROLE_ADMIN') return true;
+  return user.role === 'ROLE_USER' && ['HOSPITAL', 'CLINIC'].includes(String(user.userType).toUpperCase());
+}
+
 /**
  * loginUser
  * Sends credentials to /api/auth/login and returns response payload.

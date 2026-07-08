@@ -3,6 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { fetchPackages, type Package } from '../services/packageService';
 import {
   getAllUsers,
+  getUsers,
   approveUser,
   rejectUser,
   modifyUserPackage,
@@ -63,14 +64,15 @@ export function AdminDashboard() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const token = user?.accessToken || '';
+  const adminUserId = user?.userId || '';
 
   const loadData = async () => {
     setLoading(true);
     setErrorMessage(null);
     try {
-    const [uRes, pList, aRes, hRes, cRes, sRes] = await Promise.all([
-      // fetch full user list from subscriptions controller
-      getAllUsers(token),
+    const [pendingRes, uRes, pList, aRes, hRes, cRes, sRes] = await Promise.all([
+        getUsers(token),
+        getAllUsers(token),
         fetchPackages(),
         getPendingAddons(token),
         getAdminHospitals(token),
@@ -78,7 +80,9 @@ export function AdminDashboard() {
         getAdminStats(token)
       ]);
 
-      if (uRes.success && uRes.data) setUsersList(uRes.data);
+      const pendingUsers = pendingRes.success && pendingRes.data ? pendingRes.data : [];
+      const subscriptionUsers = uRes.success && uRes.data ? uRes.data : [];
+      setUsersList([...pendingUsers, ...subscriptionUsers]);
       setPackagesList(pList || []);
       if (aRes.success && aRes.data) setAddonsList(aRes.data);
       if (hRes.success && hRes.data) setHospitalsList(hRes.data);
@@ -104,7 +108,7 @@ export function AdminDashboard() {
     try {
       const res = await approveUser(token, userId);
       if (res.success) {
-        setUsersList(prev => prev.map(u => u.id === userId ? { ...u, status: 'APPROVED' } : u));
+        await loadData();
         refreshStats();
       } else {
         alert(res.message || 'Verification approval failed.');
@@ -121,7 +125,7 @@ export function AdminDashboard() {
     try {
       const res = await rejectUser(token, userId);
       if (res.success) {
-        setUsersList(prev => prev.map(u => u.id === userId ? { ...u, status: 'REJECTED' } : u));
+        await loadData();
         refreshStats();
       } else {
         alert(res.message || 'Verification rejection failed.');
@@ -202,7 +206,7 @@ export function AdminDashboard() {
   const handleApproveAddon = async (addonId: number) => {
     setActionLoading(true);
     try {
-      const res = await approveAddon(token, addonId);
+      const res = await approveAddon(token, addonId, adminUserId);
       if (res.success) {
         setAddonsList(prev => prev.filter(addon => addon.id !== addonId));
   // Reload users list to show updated allowedDoctor counts
@@ -222,7 +226,7 @@ export function AdminDashboard() {
   const handleRejectAddon = async (addonId: number) => {
     setActionLoading(true);
     try {
-      const res = await rejectAddon(token, addonId);
+      const res = await rejectAddon(token, addonId, adminUserId);
       if (res.success) {
         setAddonsList(prev => prev.filter(addon => addon.id !== addonId));
         alert('Doctor license addon request rejected.');

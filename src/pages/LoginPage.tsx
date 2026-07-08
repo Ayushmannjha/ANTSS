@@ -1,7 +1,7 @@
-import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { Mail, Lock, Loader2, ArrowLeft, KeyRound } from 'lucide-react';
-import { loginUser, forgotPassword, resetPassword } from '../services/authService';
+import { canUseOwnerAdminFrontend, loginUser, forgotPassword, resetPassword } from '../services/authService';
 import { useAuth } from '../context/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -27,6 +27,17 @@ export function LoginPage() {
   
   const { login } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+
+  useEffect(() => {
+    const tokenFromUrl = searchParams.get('resetToken');
+    if (tokenFromUrl) {
+      setResetToken(tokenFromUrl);
+      setView('reset');
+      setError('');
+      setSuccess('');
+    }
+  }, [searchParams]);
 
   const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -42,6 +53,11 @@ export function LoginPage() {
     try {
       const res = await loginUser(email, password);
       if (res.success && res.data) {
+        if (!canUseOwnerAdminFrontend(res.data.user)) {
+          setError('This portal is only for admins and subscription owners.');
+          return;
+        }
+
         login({
           accessToken: res.data.accessToken,
           refreshToken: res.data.refreshToken,
