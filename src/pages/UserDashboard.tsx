@@ -5,9 +5,11 @@ import {
   getHospitals,
   getClinics,
   getDoctors,
+  getRmos,
   type Hospital,
   type Clinic,
-  type Doctor
+  type Doctor,
+  type Rmo
 } from '../services/userService';
 import {
   Building2,
@@ -17,15 +19,17 @@ import {
   LogOut,
   Clock,
   Shield,
-  Loader2
+  Loader2,
+  UserRoundCog
 } from 'lucide-react';
 import OverviewTab from '../components/dashboard/OverviewTab';
 import HospitalTab from '../components/hospitals/HospitalTab';
 import ClinicTab from '../components/clinics/ClinicTab';
 import DoctorTab from '../components/doctors/DoctorTab';
+import RmoTab from '../components/rmos/RmoTab';
 import SubscriptionTab from '../components/subscriptions/SubscriptionTab';
 
-type Tab = 'overview' | 'hospitals' | 'clinics' | 'doctors' | 'subscription';
+type Tab = 'overview' | 'hospitals' | 'clinics' | 'doctors' | 'rmos' | 'subscription';
 
 export function UserDashboard() {
   const { user, logout } = useAuth();
@@ -34,6 +38,7 @@ export function UserDashboard() {
   const [hospitals, setHospitals] = useState<Hospital[]>([]);
   const [clinics, setClinics] = useState<Clinic[]>([]);
   const [doctors, setDoctors] = useState<Doctor[]>([]);
+  const [rmos, setRmos] = useState<Rmo[]>([]);
   const [loading, setLoading] = useState(true);
   
   const token = user?.accessToken || '';
@@ -41,17 +46,19 @@ export function UserDashboard() {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const [profRes, hospRes, clinRes, docRes] = await Promise.all([
+      const [profRes, hospRes, clinRes, docRes, rmoRes] = await Promise.all([
         getProfile(token),
         getHospitals(token),
         getClinics(token),
-        getDoctors(token)
+        getDoctors(token),
+        getRmos(token)
       ]);
 
       if (profRes.success) setProfile(profRes.data);
       if (hospRes.success && hospRes.data) setHospitals(hospRes.data);
       if (clinRes.success && clinRes.data) setClinics(clinRes.data);
       if (docRes.success && docRes.data) setDoctors(docRes.data);
+      if (rmoRes.success && rmoRes.data) setRmos(rmoRes.data);
     } catch (err) {
       console.error("Error fetching dashboard data", err);
     } finally {
@@ -163,6 +170,18 @@ export function UserDashboard() {
           </button>
 
           <button
+            onClick={() => setActiveTab('rmos')}
+            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-left text-sm ${
+              activeTab === 'rmos'
+                ? 'bg-gradient-to-r from-orange-500/20 to-red-500/20 border border-orange-500/30 text-white font-medium'
+                : 'text-gray-400 hover:text-white hover:bg-white/5'
+            }`}
+          >
+            <UserRoundCog className="w-5 h-5" />
+            <span>RMO & Staff</span>
+          </button>
+
+          <button
             onClick={() => setActiveTab('subscription')}
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-left text-sm ${
               activeTab === 'subscription'
@@ -240,6 +259,16 @@ export function UserDashboard() {
               doctors={doctors}
               token={token}
               onDoctorsUpdate={setDoctors}
+            />
+          )}
+
+          {activeTab === 'rmos' && (
+            <RmoTab
+              rmos={rmos}
+              hospitals={hospitals}
+              clinics={clinics}
+              token={token}
+              onRmosUpdate={setRmos}
             />
           )}
 

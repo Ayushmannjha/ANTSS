@@ -67,7 +67,7 @@ export async function registerPrescription(
     return {
       success: false,
       message: errBody?.message ?? `Request failed with status ${res.status}`,
-      data: errBody,
+      data: errBody?.data ?? errBody?.errors,
     };
   }
 
@@ -104,4 +104,3 @@ export async function registerWithInterface(
 
   return registerPrescription(payload, options);
 }
-

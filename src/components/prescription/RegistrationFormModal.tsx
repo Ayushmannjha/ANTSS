@@ -5,6 +5,7 @@ import { register } from '@/services/authService';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { getApiErrorMessage, getRequestErrorMessage } from '@/lib/apiErrors';
 import {
   Select,
   SelectContent,
@@ -90,17 +91,13 @@ export function RegistrationFormModal({ selectedPkg, onClose, onSuccess }: Regis
     register(payload, { signal })
       .then((res) => {
         if (!res.success) {
-          setSubmitError(res.message ?? 'Registration failed');
+          setSubmitError(getApiErrorMessage(res, 'Registration failed.'));
           return;
         }
         onSuccess(res.message ?? 'Registered successfully', total, doctors, rmo);
       })
       .catch((err) => {
-        if (err.name === 'AbortError') {
-          setSubmitError('Request cancelled');
-          return;
-        }
-        setSubmitError(err?.message ?? 'Network error');
+        setSubmitError(getRequestErrorMessage(err, 'Registration failed.'));
       })
       .finally(() => {
         setIsSubmitting(false);
@@ -124,8 +121,8 @@ export function RegistrationFormModal({ selectedPkg, onClose, onSuccess }: Regis
         </div>
 
         {submitError && (
-          <div className="mb-6 text-sm text-red-200 bg-red-500/20 border border-red-500/30 px-4 py-3 rounded-lg flex items-center gap-2">
-            <svg className="w-5 h-5 text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <div className="mb-6 whitespace-pre-line text-sm text-red-200 bg-red-500/20 border border-red-500/30 px-4 py-3 rounded-lg flex items-start gap-2" role="alert">
+            <svg className="w-5 h-5 text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
             {submitError}

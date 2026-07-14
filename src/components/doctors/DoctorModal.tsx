@@ -4,6 +4,7 @@ import { type Doctor, addDoctor, updateDoctor } from '../../services/userService
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { getApiErrorMessage, getRequestErrorMessage } from '@/lib/apiErrors';
 import {
   Select,
   SelectContent,
@@ -71,7 +72,7 @@ export default function DoctorModal({ token, editingDoctor, onClose, onSuccess }
           onSuccess(res.data, false);
           onClose();
         } else {
-          setError(res.message || 'Failed to update doctor');
+          setError(getApiErrorMessage(res, 'Failed to update doctor.'));
         }
       } else {
         const res = await addDoctor(token, payload);
@@ -79,11 +80,11 @@ export default function DoctorModal({ token, editingDoctor, onClose, onSuccess }
           onSuccess(res.data, true);
           onClose();
         } else {
-          setError(res.message || 'Failed to add doctor');
+          setError(getApiErrorMessage(res, 'Failed to add doctor.'));
         }
       }
-    } catch (err: any) {
-      setError(err.message || 'An error occurred.');
+    } catch (err: unknown) {
+      setError(getRequestErrorMessage(err));
     } finally {
       setActionLoading(false);
     }
@@ -99,7 +100,7 @@ export default function DoctorModal({ token, editingDoctor, onClose, onSuccess }
         <p className="text-xs text-gray-400 mb-5">Provide correct parameters for the doctor.</p>
 
         {error && (
-          <div className="bg-red-500/10 border border-red-500/50 text-red-500 px-4 py-2 rounded mb-4 text-sm">
+          <div className="whitespace-pre-line bg-red-500/10 border border-red-500/50 text-red-500 px-4 py-2 rounded mb-4 text-sm" role="alert">
             {error}
           </div>
         )}

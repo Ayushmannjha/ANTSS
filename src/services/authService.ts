@@ -132,6 +132,7 @@ export async function loginUser(
     return {
       success: false,
       message: body?.message ?? `Login failed with status ${res.status}`,
+      data: body?.data ?? body?.errors,
     };
   }
 
@@ -168,6 +169,7 @@ export async function forgotPassword(
     return {
       success: false,
       message: body?.message ?? `Request failed with status ${res.status}`,
+      data: body?.data ?? body?.errors,
     };
   }
 
@@ -205,6 +207,7 @@ export async function resetPassword(
     return {
       success: false,
       message: body?.message ?? `Password reset failed with status ${res.status}`,
+      data: body?.data ?? body?.errors,
     };
   }
 
@@ -213,4 +216,3 @@ export async function resetPassword(
     message: body?.message ?? 'Password reset successfully.',
   };
 }
-

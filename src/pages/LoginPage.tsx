@@ -6,6 +6,7 @@ import { useAuth } from '../context/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { getApiErrorMessage, getRequestErrorMessage } from '@/lib/apiErrors';
 
 type AuthView = 'login' | 'forgot' | 'reset';
 
@@ -76,10 +77,10 @@ export function LoginPage() {
           navigate('/dashboard');
         }
       } else {
-        setError(res.message ?? 'Invalid email or password');
+        setError(getApiErrorMessage(res, 'Invalid email or password.'));
       }
-    } catch (err: any) {
-      setError(err?.message ?? 'An error occurred during login');
+    } catch (err: unknown) {
+      setError(getRequestErrorMessage(err, 'An error occurred during login.'));
     } finally {
       setLoading(false);
     }
@@ -106,10 +107,10 @@ export function LoginPage() {
           setSuccess('');
         }, 3000);
       } else {
-        setError(res.message || 'Failed to send reset link.');
+        setError(getApiErrorMessage(res, 'Failed to send reset link.'));
       }
-    } catch (err: any) {
-      setError(err?.message || 'An error occurred. Please try again.');
+    } catch (err: unknown) {
+      setError(getRequestErrorMessage(err));
     } finally {
       setLoading(false);
     }
@@ -148,10 +149,10 @@ export function LoginPage() {
           setSuccess('');
         }, 3000);
       } else {
-        setError(res.message || 'Failed to reset password.');
+        setError(getApiErrorMessage(res, 'Failed to reset password.'));
       }
-    } catch (err: any) {
-      setError(err?.message || 'An error occurred. Please try again.');
+    } catch (err: unknown) {
+      setError(getRequestErrorMessage(err));
     } finally {
       setLoading(false);
     }
@@ -214,7 +215,7 @@ export function LoginPage() {
 
           {/* Feedback Messages */}
           {error && (
-            <div className="mb-6 p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-200 text-sm text-center animate-shake">
+            <div className="mb-6 whitespace-pre-line p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-200 text-sm text-center animate-shake" role="alert">
               ⚠️ {error}
             </div>
           )}

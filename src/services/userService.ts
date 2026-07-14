@@ -62,6 +62,26 @@ export interface Rmo {
   status?: string;
 }
 
+export type RmoRole = 'RMO' | 'NURSE' | 'RECEPTIONIST' | 'STAFF';
+
+export type RmoPayload = {
+  rmoName: string;
+  email: string;
+  mobileNumber?: string;
+  employeeCode: string;
+  hospitalId?: number;
+  clinicId?: number;
+  role: RmoRole;
+};
+
+export type CreateRmoPayload = RmoPayload & {
+  password: string;
+};
+
+export type UpdateRmoPayload = RmoPayload & {
+  password?: string;
+};
+
 function getHeaders(token: string) {
   return {
     'Content-Type': 'application/json',
@@ -185,8 +205,25 @@ export async function updateClinic(token: string, id: number, clinic: Partial<Cl
   };
 }
 
-export async function getDoctors(token: string): Promise<ApiResponse<Doctor[]>> {
-  const res = await fetch(`${API_BASE}/doctors`, {
+export type DoctorFacilityFilter = {
+  hospitalId?: number;
+  clinicId?: number;
+};
+
+export async function getDoctors(
+  token: string,
+  facility: DoctorFacilityFilter = {},
+): Promise<ApiResponse<Doctor[]>> {
+  if (facility.hospitalId && facility.clinicId) {
+    throw new Error('hospitalId and clinicId cannot both be provided');
+  }
+
+  const params = new URLSearchParams();
+  if (facility.hospitalId) params.set('hospitalId', String(facility.hospitalId));
+  if (facility.clinicId) params.set('clinicId', String(facility.clinicId));
+  const query = params.toString();
+
+  const res = await fetch(`${API_BASE}/doctors${query ? `?${query}` : ''}`, {
     headers: getHeaders(token),
   });
   const body = await res.json().catch(() => ({}));
@@ -274,7 +311,7 @@ export async function getRmoById(token: string, id: string): Promise<ApiResponse
   };
 }
 
-export async function addRmo(token: string, rmo: Omit<Rmo, 'id' | 'userId' | 'status'>): Promise<ApiResponse<Rmo>> {
+export async function addRmo(token: string, rmo: CreateRmoPayload): Promise<ApiResponse<Rmo>> {
   const res = await fetch(`${API_BASE}/rmos`, {
     method: 'POST',
     headers: getHeaders(token),
@@ -288,7 +325,7 @@ export async function addRmo(token: string, rmo: Omit<Rmo, 'id' | 'userId' | 'st
   };
 }
 
-export async function updateRmo(token: string, id: string, rmo: Omit<Rmo, 'id' | 'userId' | 'status'>): Promise<ApiResponse<Rmo>> {
+export async function updateRmo(token: string, id: string, rmo: UpdateRmoPayload): Promise<ApiResponse<Rmo>> {
   const res = await fetch(`${API_BASE}/rmos/${id}`, {
     method: 'PUT',
     headers: getHeaders(token),

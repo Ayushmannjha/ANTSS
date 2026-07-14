@@ -5,6 +5,7 @@ import type { Clinic, Hospital } from '../../services/userService';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { getApiErrorMessage, getRequestErrorMessage } from '@/lib/apiErrors';
 import {
   Select,
   SelectContent,
@@ -105,10 +106,10 @@ export default function AddonModal({
         onSuccess();
         onClose();
       } else {
-        setError(res.message || 'Failed to request addon.');
+        setError(getApiErrorMessage(res, 'Failed to request addon.'));
       }
-    } catch (err: any) {
-      setError(err.message || 'An error occurred.');
+    } catch (err: unknown) {
+      setError(getRequestErrorMessage(err));
     } finally {
       setLoading(false);
     }
@@ -124,7 +125,7 @@ export default function AddonModal({
         <p className="text-xs text-gray-400 mb-5">Increase your subscription's doctor limit.</p>
 
         {error && (
-          <div className="bg-red-500/10 border border-red-500/50 text-red-500 px-4 py-2 rounded mb-4 text-sm">
+          <div className="whitespace-pre-line bg-red-500/10 border border-red-500/50 text-red-500 px-4 py-2 rounded mb-4 text-sm" role="alert">
             {error}
           </div>
         )}

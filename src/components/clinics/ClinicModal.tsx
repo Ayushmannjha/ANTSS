@@ -4,6 +4,7 @@ import { type Clinic, addClinic, updateClinic } from '../../services/userService
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { getApiErrorMessage, getRequestErrorMessage } from '@/lib/apiErrors';
 
 interface ClinicModalProps {
   token: string;
@@ -61,7 +62,7 @@ export default function ClinicModal({ token, editingClinic, onClose, onSuccess }
           onSuccess(res.data, false);
           onClose();
         } else {
-          setError(res.message || 'Failed to update clinic');
+          setError(getApiErrorMessage(res, 'Failed to update clinic.'));
         }
       } else {
         const res = await addClinic(token, payload);
@@ -69,11 +70,11 @@ export default function ClinicModal({ token, editingClinic, onClose, onSuccess }
           onSuccess(res.data, true);
           onClose();
         } else {
-          setError(res.message || 'Failed to add clinic');
+          setError(getApiErrorMessage(res, 'Failed to add clinic.'));
         }
       }
-    } catch (err: any) {
-      setError(err.message || 'An error occurred.');
+    } catch (err: unknown) {
+      setError(getRequestErrorMessage(err));
     } finally {
       setActionLoading(false);
     }
@@ -89,7 +90,7 @@ export default function ClinicModal({ token, editingClinic, onClose, onSuccess }
         <p className="text-xs text-gray-400 mb-5">Provide correct parameters for the clinic.</p>
 
         {error && (
-          <div className="bg-red-500/10 border border-red-500/50 text-red-500 px-4 py-2 rounded mb-4 text-sm">
+          <div className="whitespace-pre-line bg-red-500/10 border border-red-500/50 text-red-500 px-4 py-2 rounded mb-4 text-sm" role="alert">
             {error}
           </div>
         )}
