@@ -47,7 +47,7 @@ export default function RmoModal({
   const [employeeCode, setEmployeeCode] = useState('');
   const [password, setPassword] = useState('');
   const [role, setRole] = useState<RmoRole>('RMO');
-  const [facility, setFacility] = useState('none');
+  const [facility, setFacility] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
 
@@ -61,7 +61,7 @@ export default function RmoModal({
     setRole(roles.includes(editingRmo.role as RmoRole) ? editingRmo.role as RmoRole : 'RMO');
     if (editingRmo.hospitalId) setFacility(`hospital:${editingRmo.hospitalId}`);
     else if (editingRmo.clinicId) setFacility(`clinic:${editingRmo.clinicId}`);
-    else setFacility('none');
+    else setFacility('');
   }, [editingRmo]);
 
   const handleSubmit = async (event: FormEvent) => {
@@ -81,6 +81,10 @@ export default function RmoModal({
       setError('Password is required when creating an RMO or staff member.');
       return;
     }
+    if (!facility) {
+      setError('Select the hospital or clinic this RMO or staff member belongs to.');
+      return;
+    }
     if (trimmedName.length > 100 || trimmedEmail.length > 254 || trimmedEmployeeCode.length > 50) {
       setError('One or more fields exceed the allowed length.');
       return;
@@ -98,8 +102,19 @@ export default function RmoModal({
       role,
     };
 
-    if (facility.startsWith('hospital:')) payload.hospitalId = Number(facility.split(':')[1]);
-    if (facility.startsWith('clinic:')) payload.clinicId = Number(facility.split(':')[1]);
+    const [facilityType, facilityIdValue] = facility.split(':');
+    const facilityId = Number(facilityIdValue);
+    if (!Number.isInteger(facilityId) || facilityId <= 0) {
+      setError('Select a valid hospital or clinic.');
+      return;
+    }
+
+    if (facilityType === 'hospital') payload.hospitalId = facilityId;
+    else if (facilityType === 'clinic') payload.clinicId = facilityId;
+    else {
+      setError('Select a valid hospital or clinic.');
+      return;
+    }
 
     setError('');
     setSubmitting(true);
@@ -107,7 +122,7 @@ export default function RmoModal({
     try {
       const response = editingRmo
         ? await updateRmo(token, editingRmo.id, payload)
-        : await addRmo(token, { ...payload, password });
+        : await addRmo(token, { ...payload, password: trimmedPassword });
 
       if (response.success && response.data) {
         onSuccess(response.data, !editingRmo);
@@ -127,7 +142,7 @@ export default function RmoModal({
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
       <form onSubmit={handleSubmit} className="relative z-10 max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-white/10 bg-slate-900 p-6 shadow-2xl">
         <h3 className="mb-1 text-xl font-bold text-white">{editingRmo ? 'Edit' : 'Add'} RMO / Staff</h3>
-        <p className="mb-5 text-xs text-gray-400">Enter the staff details and optionally assign a hospital or clinic.</p>
+        <p className="mb-5 text-xs text-gray-400">Enter the staff details and assign the hospital or clinic they belong to.</p>
 
         {error && (
           <div className="mb-4 whitespace-pre-line rounded border border-red-500/50 bg-red-500/10 px-4 py-2 text-sm text-red-400" role="alert">
@@ -174,21 +189,23 @@ export default function RmoModal({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="rmoFacility" className="text-xs font-semibold uppercase text-gray-400">Facility</Label>
-            <Select value={facility} onValueChange={setFacility}>
-              <SelectTrigger id="rmoFacility" className="w-full text-white"><SelectValue placeholder="Select a facility" /></SelectTrigger>
+            <Label htmlFor="rmoFacility" className="text-xs font-semibold uppercase text-gray-400">Hospital / Clinic *</Label>
+            <Select value={facility} onValueChange={setFacility} disabled={hospitals.length === 0 && clinics.length === 0} required>
+              <SelectTrigger id="rmoFacility" className="w-full text-white" aria-required="true"><SelectValue placeholder="Select a hospital or clinic" /></SelectTrigger>
               <SelectContent>
-                <SelectItem value="none">No facility assignment</SelectItem>
                 {hospitals.map((hospital) => <SelectItem key={`hospital-${hospital.id}`} value={`hospital:${hospital.id}`}>Hospital — {hospital.hospitalName}</SelectItem>)}
                 {clinics.map((clinic) => <SelectItem key={`clinic-${clinic.id}`} value={`clinic:${clinic.id}`}>Clinic — {clinic.clinicName}</SelectItem>)}
               </SelectContent>
             </Select>
+            {hospitals.length === 0 && clinics.length === 0 && (
+              <p className="text-xs text-amber-400">Add a hospital or clinic before registering an RMO or staff member.</p>
+            )}
           </div>
         </div>
 
         <div className="mt-6 flex justify-end gap-3 border-t border-white/5 pt-4">
           <Button type="button" variant="ghost" onClick={onClose} className="text-gray-400 hover:text-white" disabled={submitting}>Cancel</Button>
-          <Button type="submit" disabled={submitting} className="flex items-center gap-2 bg-gradient-to-r from-orange-500 to-red-500 text-white shadow hover:opacity-95">
+          <Button type="submit" disabled={submitting || (hospitals.length === 0 && clinics.length === 0)} className="flex items-center gap-2 bg-gradient-to-r from-orange-500 to-red-500 text-white shadow hover:opacity-95">
             {submitting && <Loader2 className="h-4 w-4 animate-spin" />}
             <span>{editingRmo ? 'Save Changes' : 'Add Staff Member'}</span>
           </Button>
