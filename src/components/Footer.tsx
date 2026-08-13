@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import { Github, Twitter, Linkedin, Instagram, ArrowUp } from 'lucide-react';
 
 const footerLinks = {
@@ -9,11 +10,18 @@ const footerLinks = {
     { name: 'Custom Software', href: '#services' },
     { name: 'UI/UX Design', href: '#services' },
   ],
+  resources: [
+    { name: 'Technical Blog', href: '/blog' },
+    { name: 'Learning Hub', href: '/blog' },
+    { name: 'About Us', href: '#home' },
+    { name: 'Privacy Policy', href: '/privacy-policy' },
+    { name: 'Terms of Service', href: '/terms' },
+  ],
   support: [
     { name: 'Help Center', href: '#' },
     { name: 'Documentation', href: '#' },
     { name: 'Contact Us', href: '#contact' },
-    { name: 'Privacy Policy', href: '#' },
+    { name: 'Get a Quote', href: '#contact' },
   ],
 };
 
@@ -104,6 +112,32 @@ export function Footer() {
           </div>
 
           <div>
+            <h4 className="text-white font-semibold mb-4">Resources</h4>
+            <ul className="space-y-3">
+              {footerLinks.resources.map((link) => (
+                <li key={link.name}>
+                  {link.href.startsWith('/') ? (
+                    <Link
+                      to={link.href}
+                      className="text-gray-400 hover:text-white transition-colors"
+                    >
+                      {link.name}
+                    </Link>
+                  ) : (
+                    <motion.button
+                      onClick={() => handleNavClick(link.href)}
+                      whileHover={{ x: 5 }}
+                      className="text-gray-400 hover:text-white transition-colors text-left"
+                    >
+                      {link.name}
+                    </motion.button>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div>
             <h4 className="text-white font-semibold mb-4">Support</h4>
             <ul className="space-y-3">
               {footerLinks.support.map((link) => (
@@ -131,12 +165,12 @@ export function Footer() {
           </p>
 
           <div className="flex items-center gap-6">
-            <a href="#" className="text-gray-400 hover:text-white text-sm transition-colors">
+            <Link to="/terms" className="text-gray-400 hover:text-white text-sm transition-colors">
               Terms of Service
-            </a>
-            <a href="#" className="text-gray-400 hover:text-white text-sm transition-colors">
+            </Link>
+            <Link to="/privacy-policy" className="text-gray-400 hover:text-white text-sm transition-colors">
               Privacy Policy
-            </a>
+            </Link>
             <a href="#" className="text-gray-400 hover:text-white text-sm transition-colors">
               Cookies
             </a>

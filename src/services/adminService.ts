@@ -62,6 +62,62 @@ export interface AdminStats {
   activePackages: number;
 }
 
+export type ConsultationBillStatus = 'PENDING' | 'PAID' | 'FAILED' | 'CANCELLED' | 'REFUNDED' | string;
+
+export interface ConsultationBill {
+  id: string;
+  billNumber?: string;
+  patientName?: string;
+  doctorName?: string;
+  facilityName?: string;
+  consultationDate?: string;
+  consultationFee: number;
+  discountAmount: number;
+  taxAmount: number;
+  totalAmount: number;
+  paymentStatus: ConsultationBillStatus;
+  paymentMode?: string;
+  createdAt?: string;
+}
+
+export interface ConsultationRevenueReport {
+  totalRevenue: number;
+  paidRevenue: number;
+  pendingRevenue: number;
+  refundedRevenue: number;
+  todayRevenue: number;
+  thisWeekRevenue: number;
+  thisMonthRevenue: number;
+  thisYearRevenue: number;
+  totalBills: number;
+  paidBills: number;
+  pendingBills: number;
+  averageBillAmount: number;
+  bills: ConsultationBill[];
+}
+
+export interface ConsultationRevenueFilters {
+  billNumber?: string;
+  startDate?: string;
+  endDate?: string;
+  status?: ConsultationBillStatus;
+  doctorId?: string;
+  hospitalId?: number;
+  clinicId?: number;
+}
+
+export interface CursorPage<T> {
+  data: T[];
+  nextCursor: string | null;
+  hasNextPage: boolean;
+  totalCount?: number;
+}
+
+export interface CursorListOptions {
+  cursor?: string | null;
+  limit?: number;
+}
+
 function getHeaders(token: string) {
   return {
     'Content-Type': 'application/json',
@@ -72,6 +128,42 @@ function getHeaders(token: string) {
 function unwrapList<T = any>(body: any): T[] {
   const raw = body?.data ?? body;
   return Array.isArray(raw) ? raw : [];
+}
+
+function unwrapCursorPage<T = any>(body: any): CursorPage<T> {
+  const raw = body?.data ?? body ?? {};
+  const list =
+    Array.isArray(raw) ? raw :
+    Array.isArray(raw.items) ? raw.items :
+    Array.isArray(raw.content) ? raw.content :
+    Array.isArray(raw.records) ? raw.records :
+    Array.isArray(raw.users) ? raw.users :
+    [];
+
+  const pageInfo = raw.pageInfo ?? body?.pageInfo ?? {};
+  const nextCursor =
+    raw.nextCursor ??
+    raw.nextPageCursor ??
+    raw.cursor ??
+    body?.nextCursor ??
+    body?.nextPageCursor ??
+    pageInfo.nextCursor ??
+    pageInfo.endCursor ??
+    null;
+  const hasNextPage = Boolean(
+    raw.hasNextPage ??
+    body?.hasNextPage ??
+    pageInfo.hasNextPage ??
+    nextCursor
+  );
+  const totalCount = Number(raw.totalCount ?? body?.totalCount ?? raw.totalElements);
+
+  return {
+    data: list,
+    nextCursor: nextCursor ? String(nextCursor) : null,
+    hasNextPage,
+    totalCount: Number.isFinite(totalCount) ? totalCount : undefined,
+  };
 }
 
 function normalizeAdminStatus(subscriptionStatus?: string): AdminUserResponse['status'] {
@@ -160,6 +252,58 @@ function mapPendingAddon(summary: any, addon: any): DoctorAddonResponse {
   };
 }
 
+function toAmount(value: unknown): number {
+  const amount = Number(value ?? 0);
+  return Number.isFinite(amount) ? amount : 0;
+}
+
+function mapConsultationBill(it: any): ConsultationBill {
+  return {
+    id: String(it.id ?? it.billId ?? it.consultationBillId ?? ''),
+    billNumber: it.billNumber ?? it.invoiceNumber,
+    patientName: it.patientName ?? it.patientFullName,
+    doctorName: it.doctorName ?? it.consultantName,
+    facilityName: it.facilityName ?? it.hospitalName ?? it.clinicName,
+    consultationDate: it.consultationDate ?? it.appointmentDate ?? it.createdAt,
+    consultationFee: toAmount(it.consultationFee ?? it.fee),
+    discountAmount: toAmount(it.discountAmount ?? it.discount),
+    taxAmount: toAmount(it.taxAmount ?? it.tax),
+    totalAmount: toAmount(it.totalAmount ?? it.amount ?? it.consultationFee),
+    paymentStatus: String(it.paymentStatus ?? it.status ?? 'PENDING'),
+    paymentMode: it.paymentMode ?? it.paymentMethod,
+    createdAt: it.createdAt,
+  };
+}
+
+function normalizeConsultationRevenueReport(body: any): ConsultationRevenueReport {
+  const raw = body?.data ?? body ?? {};
+  const rawBills: any[] = Array.isArray(raw.bills) ? raw.bills : Array.isArray(raw) ? raw : [];
+  const bills: ConsultationBill[] = rawBills
+    .map(mapConsultationBill)
+    .filter((bill) => bill.id);
+  const paidBills: ConsultationBill[] = bills.filter((bill) => bill.paymentStatus === 'PAID');
+  const pendingBills: ConsultationBill[] = bills.filter((bill) => bill.paymentStatus === 'PENDING');
+  const refundedBills: ConsultationBill[] = bills.filter((bill) => bill.paymentStatus === 'REFUNDED');
+  const paidRevenue = toAmount(raw.paidRevenue ?? paidBills.reduce((sum: number, bill: ConsultationBill) => sum + bill.totalAmount, 0));
+  const totalBills = Number(raw.totalBills ?? bills.length);
+
+  return {
+    totalRevenue: toAmount(raw.totalRevenue ?? paidRevenue),
+    paidRevenue,
+    pendingRevenue: toAmount(raw.pendingRevenue ?? pendingBills.reduce((sum: number, bill: ConsultationBill) => sum + bill.totalAmount, 0)),
+    refundedRevenue: toAmount(raw.refundedRevenue ?? refundedBills.reduce((sum: number, bill: ConsultationBill) => sum + bill.totalAmount, 0)),
+    todayRevenue: toAmount(raw.todayRevenue),
+    thisWeekRevenue: toAmount(raw.thisWeekRevenue),
+    thisMonthRevenue: toAmount(raw.thisMonthRevenue),
+    thisYearRevenue: toAmount(raw.thisYearRevenue),
+    totalBills,
+    paidBills: Number(raw.paidBills ?? paidBills.length),
+    pendingBills: Number(raw.pendingBills ?? pendingBills.length),
+    averageBillAmount: toAmount(raw.averageBillAmount ?? (totalBills ? bills.reduce((sum: number, bill: ConsultationBill) => sum + bill.totalAmount, 0) / totalBills : 0)),
+    bills,
+  };
+}
+
 
 
 /**
@@ -167,19 +311,30 @@ function mapPendingAddon(summary: any, addon: any): DoctorAddonResponse {
  * GET /api/user/subscriptions/get-all-users
  * Returns a list of all users (admin-only endpoint)
  */
-export async function getAllUsers(token: string): Promise<ApiResponse<AdminUserResponse[]>> {
-  const res = await fetch(`${API_BASE}/user/subscriptions/get-all-users`, {
+export async function getAllUsers(
+  token: string,
+  options: CursorListOptions = {},
+): Promise<ApiResponse<CursorPage<AdminUserResponse>>> {
+  const params = new URLSearchParams();
+  params.set('limit', String(options.limit ?? 50));
+  if (options.cursor) params.set('cursor', options.cursor);
+
+  const res = await fetch(`${API_BASE}/user/subscriptions/get-all-users?${params.toString()}`, {
     headers: getHeaders(token),
   });
   const body = await res.json().catch(() => ({}));
+  const page = unwrapCursorPage(body);
   // backend returns user objects with `userId` and subscription-related fields —
   // map them to AdminUserResponse expected by the UI
-  const mapped = unwrapList(body).map(mapAdminUser).filter((user) => user.id);
+  const mapped = page.data.map(mapAdminUser).filter((user) => user.id);
 
   return {
     success: res.ok,
     message: body.message,
-    data: mapped,
+    data: {
+      ...page,
+      data: mapped,
+    },
   };
 }
 
@@ -330,6 +485,42 @@ export async function getAdminStats(_token: string): Promise<ApiResponse<AdminSt
       totalClinics: 0,
       activePackages: 3,
     },
+  };
+}
+
+/**
+ * getConsultationRevenueReport
+ * GET /api/admin/consultation-billing/revenue
+ *
+ * Expected backend response:
+ * {
+ *   totalRevenue, paidRevenue, pendingRevenue, refundedRevenue,
+ *   todayRevenue, thisWeekRevenue, thisMonthRevenue, thisYearRevenue,
+ *   totalBills, paidBills, pendingBills, averageBillAmount,
+ *   bills: ConsultationBill[]
+ * }
+ */
+export async function getConsultationRevenueReport(
+  token: string,
+  filters: ConsultationRevenueFilters = {},
+): Promise<ApiResponse<ConsultationRevenueReport>> {
+  const params = new URLSearchParams();
+  Object.entries(filters).forEach(([key, value]) => {
+    if (value !== undefined && value !== null && value !== '') {
+      params.set(key, String(value));
+    }
+  });
+
+  const query = params.toString();
+  const res = await fetch(`${API_BASE}/admin/consultation-billing/revenue${query ? `?${query}` : ''}`, {
+    headers: getHeaders(token),
+  });
+  const body = await res.json().catch(() => ({}));
+
+  return {
+    success: res.ok,
+    message: body.message,
+    data: normalizeConsultationRevenueReport(body),
   };
 }
 

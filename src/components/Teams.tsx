@@ -17,10 +17,10 @@ const teamMembers = [
     role: 'CMO',
     image: '/market2.png',
 
-  }, {
-    name: 'Rahul Srivastava',
+  },   {
+    name: 'Mukesh Tiwari',
     role: 'CTO',
-    image: '/cte2.png',
+    image: '/cto.png',
 
   },
 ];
@@ -87,18 +87,21 @@ export function Teams() {
                 className="group relative sm:last:col-span-2 lg:last:col-span-1 sm:last:w-[90%] sm:last:mx-auto lg:last:w-full"
               >
                 {/* Card */}
-                <div className="relative rounded-2xl overflow-hidden">
+                <div className="relative rounded-2xl overflow-hidden bg-slate-950">
                   {/* Image */}
                   <motion.div
                     variants={zoomIn}
                     initial="hidden"
                     animate={isInView ? "visible" : "hidden"}
                     transition={withDelay(400 + index * 100)}
+                    className="relative w-full h-80 sm:h-96 flex items-center justify-center"
                   >
+                    <div className="absolute inset-0 bg-gradient-to-b from-slate-900 via-slate-900/80 to-slate-950" />
+                    <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-48 h-48 bg-orange-500/10 rounded-full blur-[80px]" />
                     <img
                       src={member.image}
                       alt={member.name}
-                      className="w-full h-80 sm:h-96 object-cover transition-transform duration-500 group-hover:scale-110"
+                      className="relative w-full h-full object-contain object-top drop-shadow-2xl transition-transform duration-500 group-hover:scale-105"
                     />
                   </motion.div>
 

@@ -15,12 +15,15 @@ import {
   createAdminPackage,
   updateAdminPackage,
   getAdminStats,
+  getConsultationRevenueReport,
   getPendingAddons,
   approveAddon,
   rejectAddon,
   type AdminUserResponse,
   type DoctorAddonResponse,
-  type AdminStats
+  type AdminStats,
+  type ConsultationRevenueReport,
+  type ConsultationRevenueFilters
 } from '../services/adminService';
 import type { Hospital, Clinic } from '../services/userService';
 
@@ -57,42 +60,97 @@ export function AdminDashboard() {
   const [hospitalsList, setHospitalsList] = useState<Hospital[]>([]);
   const [clinicsList, setClinicsList] = useState<Clinic[]>([]);
   const [stats, setStats] = useState<AdminStats | null>(null);
+  const [consultationRevenue, setConsultationRevenue] = useState<ConsultationRevenueReport | null>(null);
+  const [registeredUsersNextCursor, setRegisteredUsersNextCursor] = useState<string | null>(null);
+  const [registeredUsersHasNextPage, setRegisteredUsersHasNextPage] = useState(false);
 
   // Loading States
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(false);
+  const [consultationRevenueLoading, setConsultationRevenueLoading] = useState(false);
+  const [registeredUsersLoadingMore, setRegisteredUsersLoadingMore] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const token = user?.accessToken || '';
   const adminUserId = user?.userId || '';
 
+  const loadConsultationRevenue = async (filters: ConsultationRevenueFilters = {}) => {
+    setConsultationRevenueLoading(true);
+    try {
+      const rRes = await getConsultationRevenueReport(token, filters);
+      if (rRes.success && rRes.data) {
+        setConsultationRevenue(rRes.data);
+      } else {
+        alert(rRes.message || 'Failed to fetch consultation revenue.');
+      }
+    } catch (err) {
+      console.error('Error loading consultation revenue report', err);
+      alert('Failed to connect to consultation billing endpoint.');
+    } finally {
+      setConsultationRevenueLoading(false);
+    }
+  };
+
   const loadData = async () => {
     setLoading(true);
     setErrorMessage(null);
     try {
-    const [pendingRes, uRes, pList, aRes, hRes, cRes, sRes] = await Promise.all([
+    const [pendingRes, uRes, pList, aRes, hRes, cRes, sRes, rRes] = await Promise.all([
         getUsers(token),
         getAllUsers(token),
         fetchPackages(),
         getPendingAddons(token),
         getAdminHospitals(token),
         getAdminClinics(token),
-        getAdminStats(token)
+        getAdminStats(token),
+        getConsultationRevenueReport(token)
       ]);
 
       const pendingUsers = pendingRes.success && pendingRes.data ? pendingRes.data : [];
-      const subscriptionUsers = uRes.success && uRes.data ? uRes.data : [];
+      const subscriptionUsers = uRes.success && uRes.data ? uRes.data.data : [];
+      setRegisteredUsersNextCursor(uRes.success && uRes.data ? uRes.data.nextCursor : null);
+      setRegisteredUsersHasNextPage(uRes.success && uRes.data ? uRes.data.hasNextPage : false);
       setUsersList([...pendingUsers, ...subscriptionUsers]);
       setPackagesList(pList || []);
       if (aRes.success && aRes.data) setAddonsList(aRes.data);
       if (hRes.success && hRes.data) setHospitalsList(hRes.data);
       if (cRes.success && cRes.data) setClinicsList(cRes.data);
       if (sRes.success && sRes.data) setStats(sRes.data);
+      if (rRes.success && rRes.data) setConsultationRevenue(rRes.data);
     } catch (err) {
       console.error('Error loading admin dashboard details', err);
       setErrorMessage('Failed to connect to backend controllers. Please verify the Java service is running.');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const loadMoreRegisteredUsers = async () => {
+    if (!registeredUsersHasNextPage || registeredUsersLoadingMore) return;
+
+    setRegisteredUsersLoadingMore(true);
+    try {
+      const uRes = await getAllUsers(token, {
+        cursor: registeredUsersNextCursor,
+        limit: 50,
+      });
+
+      if (uRes.success && uRes.data) {
+        setUsersList(prev => {
+          const seenIds = new Set(prev.map(user => user.id));
+          const nextUsers = uRes.data!.data.filter(user => !seenIds.has(user.id));
+          return [...prev, ...nextUsers];
+        });
+        setRegisteredUsersNextCursor(uRes.data.nextCursor);
+        setRegisteredUsersHasNextPage(uRes.data.hasNextPage);
+      } else {
+        alert(uRes.message || 'Failed to load more users.');
+      }
+    } catch (err) {
+      console.error('Error loading more registered users', err);
+      alert('Failed to load more registered users.');
+    } finally {
+      setRegisteredUsersLoadingMore(false);
     }
   };
 
@@ -209,9 +267,8 @@ export function AdminDashboard() {
       const res = await approveAddon(token, addonId, adminUserId);
       if (res.success) {
         setAddonsList(prev => prev.filter(addon => addon.id !== addonId));
-  // Reload users list to show updated allowedDoctor counts
-  const uRes = await getAllUsers(token);
-  if (uRes.success && uRes.data) setUsersList(uRes.data);
+        // Reload first page so updated allowedDoctor counts are reflected.
+        await loadData();
         alert('Doctor license addon successfully approved and applied!');
       } else {
         alert(res.message || 'Addon approval failed.');
@@ -470,6 +527,9 @@ export function AdminDashboard() {
               onModifyPackage={handleModifyUserPackage}
               onExtendValidity={handleExtendUserValidity}
               actionLoading={actionLoading}
+              hasMoreUsers={registeredUsersHasNextPage}
+              loadingMoreUsers={registeredUsersLoadingMore}
+              onLoadMoreUsers={loadMoreRegisteredUsers}
             />
           )}
 
@@ -501,6 +561,9 @@ export function AdminDashboard() {
           {activeTab === 'analytics' && (
             <AnalyticsTab
               stats={stats}
+              consultationRevenue={consultationRevenue}
+              consultationRevenueLoading={consultationRevenueLoading}
+              onConsultationRevenueFilter={loadConsultationRevenue}
               usersCount={usersList.filter(u => u.status !== 'PENDING').length}
               hospitalsCount={hospitalsList.length}
               clinicsCount={clinicsList.length}

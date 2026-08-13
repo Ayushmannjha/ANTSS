@@ -44,6 +44,7 @@ export interface Doctor {
   mobileNumber?: string;
   registrationNumber: string;
   signatureUrl?: string;
+  consultationFee?: number;
   hospitalId?: number;
   clinicId?: number;
   status?: string;

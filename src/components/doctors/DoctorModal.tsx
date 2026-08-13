@@ -28,6 +28,7 @@ export default function DoctorModal({ token, editingDoctor, onClose, onSuccess }
   const [formEmail, setFormEmail] = useState('');
   const [formMobile, setFormMobile] = useState('');
   const [formRegNo, setFormRegNo] = useState('');
+  const [formConsultationFee, setFormConsultationFee] = useState<number | ''>('');
   const [formStatus, setFormStatus] = useState('ACTIVE');
   const [actionLoading, setActionLoading] = useState(false);
   const [error, setError] = useState('');
@@ -41,14 +42,15 @@ export default function DoctorModal({ token, editingDoctor, onClose, onSuccess }
       setFormEmail(editingDoctor.email || '');
       setFormMobile(editingDoctor.mobileNumber || '');
       setFormRegNo(editingDoctor.registrationNumber || '');
+      setFormConsultationFee(editingDoctor.consultationFee ?? '');
       setFormStatus(editingDoctor.status || 'ACTIVE');
     }
   }, [editingDoctor]);
 
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formName.trim() || !formSpecialization.trim() || !formQualification.trim() || formExperience === '' || !formRegNo.trim()) {
-      setError('Name, Specialization, Qualification, Experience, and Registration No are required.');
+    if (!formName.trim() || !formSpecialization.trim() || !formQualification.trim() || formExperience === '' || !formRegNo.trim() || formConsultationFee === '') {
+      setError('Name, Specialization, Qualification, Experience, Registration No, and Consultation Fee are required.');
       return;
     }
     setError('');
@@ -62,6 +64,7 @@ export default function DoctorModal({ token, editingDoctor, onClose, onSuccess }
       email: formEmail || undefined,
       mobileNumber: formMobile || undefined,
       registrationNumber: formRegNo,
+      consultationFee: Number(formConsultationFee),
       ...(editingDoctor ? { status: formStatus } : {})
     };
 
@@ -192,6 +195,21 @@ export default function DoctorModal({ token, editingDoctor, onClose, onSuccess }
               onChange={(e) => setFormRegNo(e.target.value)}
               className="text-white"
               placeholder="MCI-12345"
+              required
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="consultationFee" className="text-xs font-semibold text-gray-400 uppercase">Consultation Fee *</Label>
+            <Input
+              id="consultationFee"
+              type="number"
+              min="0"
+              step="0.01"
+              value={formConsultationFee}
+              onChange={(e) => setFormConsultationFee(e.target.value === '' ? '' : Number(e.target.value))}
+              className="text-white"
+              placeholder="500.00"
               required
             />
           </div>

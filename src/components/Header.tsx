@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Menu, X, LogIn } from 'lucide-react';
 import { useScrollHeader } from '@/hooks/useAnimations';
 
@@ -12,11 +12,13 @@ const navItems = [
   { name: 'Team', href: '#team' },
   { name: 'Contact', href: '#contact' },
   { name: 'Prescription', href: '#prescription' },
+  { name: 'Blog', href: '/blog' },
 ];
 
 export function Header() {
   const isScrolled = useScrollHeader();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (mobileMenuOpen) {
@@ -31,6 +33,10 @@ export function Header() {
 
   const handleNavClick = (href: string) => {
     setMobileMenuOpen(false);
+    if (href.startsWith('/')) {
+      navigate(href);
+      return;
+    }
     // Small delay to allow menu close animation and body overflow reset
     setTimeout(() => {
       const element = document.querySelector(href);

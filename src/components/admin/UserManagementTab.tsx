@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import type { AdminUserResponse } from '../../services/adminService';
 import type { Package } from '../../services/packageService';
-import { Search, ShieldCheck, Edit, Calendar, Ban, CheckCircle, Mail, Phone, Building, CreditCard } from 'lucide-react';
+import { Search, ShieldCheck, Edit, Calendar, Ban, CheckCircle, Mail, Phone, Building, CreditCard, Loader2 } from 'lucide-react';
 import SubscriptionSummaryModal from '../subscriptions/SubscriptionSummaryModal';
 import { isSubscriptionValid, getRemainingDoctorSlots } from '../../services/subscriptionService';
 import { Button } from '@/components/ui/button';
@@ -24,6 +24,9 @@ interface UserManagementTabProps {
   onModifyPackage: (id: string, packageId: number) => Promise<void>;
   onExtendValidity: (id: string, days: number) => Promise<void>;
   actionLoading: boolean;
+  hasMoreUsers: boolean;
+  loadingMoreUsers: boolean;
+  onLoadMoreUsers: () => Promise<void>;
 }
 
 export function UserManagementTab({
@@ -34,7 +37,10 @@ export function UserManagementTab({
   onUnblock,
   onModifyPackage,
   onExtendValidity,
-  actionLoading
+  actionLoading,
+  hasMoreUsers,
+  loadingMoreUsers,
+  onLoadMoreUsers
 }: UserManagementTabProps) {
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -311,6 +317,21 @@ export function UserManagementTab({
               )}
             </tbody>
           </table>
+        </div>
+        <div className="flex flex-col gap-3 border-t border-white/5 bg-slate-950/30 px-4 py-4 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-xs text-gray-500">
+            {hasMoreUsers ? 'More users are available on the server.' : 'All loaded users are shown.'}
+          </p>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={onLoadMoreUsers}
+            disabled={!hasMoreUsers || loadingMoreUsers}
+            className="h-9 gap-2 border-white/10 bg-slate-950/40 px-4 text-xs text-gray-300 hover:bg-white/5 hover:text-white disabled:opacity-40"
+          >
+            {loadingMoreUsers && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
+            <span>{loadingMoreUsers ? 'Loading...' : hasMoreUsers ? 'Load more' : 'No more users'}</span>
+          </Button>
         </div>
       </div>
 
