@@ -16,7 +16,7 @@
 
 const baseUrl =
   (import.meta.env.VITE_API_URL as string | undefined) ??
-  (import.meta.env.DEV ? 'http://localhost:2030' : '');
+  (import.meta.env.DEV ? 'http://localhost:2030' : 'https://api.antss.in');
 
 /**
  * API_BASE — resolves to the full API prefix.
