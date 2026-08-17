@@ -6,7 +6,7 @@ import { zoomIn, fadeInLeft, fadeInRight, fadeInDown, withDelay } from '@/lib/an
 
 const teamMembers = [
   {
-    name: 'Mukesh Tiwaru',
+    name: 'Kumar Mukesh',
     role: 'CEO & Founder',
     image: '/ceo1.png',
 
