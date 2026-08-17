@@ -11,7 +11,12 @@ const teamMembers = [
     image: '/ceo1.png',
 
   },
+{
+    name: 'Nishu Kumari',
+    role: 'COO',
+    image: '/ceo12.png',
 
+  },
   {
     name: 'Amar Kumar',
     role: 'CMO',
