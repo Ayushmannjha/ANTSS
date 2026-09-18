@@ -7,7 +7,7 @@ import { zoomIn, fadeInLeft, fadeInRight, fadeInDown, withDelay } from '@/lib/an
 const teamMembers = [
   {
     name: 'Ayushman Kumar Jha',
-    role: 'CEO & Founder',
+    role: 'Founder and CEO',
     image: '/ceo1.png',
 
   },
@@ -59,7 +59,7 @@ export function Teams() {
         </div>
 
         {/* Team Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+        <div className="flex justify-center">
           {teamMembers.map((member, index) => {
             const variants = index === 0 ? fadeInLeft : index === 1 ? fadeInDown : fadeInRight;
             const delay = index === 0 ? 400 : index === 1 ? 0 : 400;
